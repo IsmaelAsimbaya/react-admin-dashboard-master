@@ -139,13 +139,29 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
+
             <Item
-              title="Contacts Information"
+              title="Información Pacientes"
               to="/contacts"
               icon={<ContactsOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
+            <Item
+              title="Información Medicos"
+              to="/infoMedicos"
+              icon={<ContactsOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Información Consultas"
+              to="/infoConsultas"
+              icon={<ContactsOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
             <Item
               title="Invoices Balances"
               to="/invoices"
@@ -162,12 +178,27 @@ const Sidebar = () => {
               Pages
             </Typography>
             <Item
-              title="Profile Form"
+              title="Pacientes"
               to="/form"
               icon={<PersonOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
+            <Item
+              title="Medicos"
+              to="/medicos"
+              icon={<PersonOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Consultas"
+              to="/consultas"
+              icon={<PersonOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
             <Item
               title="Calendar"
               to="/calendar"

@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { Box } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { tokens } from "../../theme";
+import { tokens } from "../../../../theme";
 //import { mockDataContacts } from "../../data/mockData";
-import Header from "../../components/Header";
+import Header from "../../../../components/Header";
 import { useTheme } from "@mui/material";
 import axios from "axios"; // Importa la librería axios para realizar la solicitud HTTP
 

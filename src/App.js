@@ -5,9 +5,9 @@ import Sidebar from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
 import Team from "./scenes/team";
 import Invoices from "./scenes/invoices";
-import Contacts from "./scenes/contacts";
+import Contacts from "./scenes/tablas/pacientes/contacts";
 import Bar from "./scenes/bar";
-import Form from "./scenes/form";
+import Form from "./scenes/tablas/pacientes/form";
 import Line from "./scenes/line";
 import Pie from "./scenes/pie";
 import FAQ from "./scenes/faq";
@@ -15,6 +15,11 @@ import Geography from "./scenes/geography";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import Calendar from "./scenes/calendar/calendar";
+
+import Medico from "./scenes/tablas/medicos/medico";
+import MedicoInfo from "./scenes/tablas/medicos/medicoInfo";
+import Consulta from "./scenes/tablas/consultas/consulta";
+import ConsultaInfo from "./scenes/tablas/consultas/consultaInfo";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -40,6 +45,12 @@ function App() {
               <Route path="/faq" element={<FAQ />} />
               <Route path="/calendar" element={<Calendar />} />
               <Route path="/geography" element={<Geography />} />
+
+              <Route path="/medicos" element={<Medico />} />
+              <Route path="/infoMedicos" element={<MedicoInfo />} />
+              <Route path="/consultas" element={<Consulta />} />
+              <Route path="/infoConsultas" element={<ConsultaInfo />} />
+
             </Routes>
           </main>
         </div>
