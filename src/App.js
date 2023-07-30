@@ -20,6 +20,32 @@ import Medico from "./scenes/tablas/medicos/medico";
 import MedicoInfo from "./scenes/tablas/medicos/medicoInfo";
 import Consulta from "./scenes/tablas/consultas/consulta";
 import ConsultaInfo from "./scenes/tablas/consultas/consultaInfo";
+import Departamento from "./scenes/tablas/departamentos/departamento"
+import DepartamentoInfo from "./scenes/tablas/departamentos/departamentoInfo"
+import Derivacion from "./scenes/tablas/derivaciones/derivacion";
+import DerivacionInfo from "./scenes/tablas/derivaciones/dervicacionInfo";
+import Especialidad from "./scenes/tablas/especialidades/especialidad";
+import EspecialidadInfo from "./scenes/tablas/especialidades/especialidadInfo";
+import Factura from "./scenes/tablas/facturas/factura";
+import FacturaInfo from "./scenes/tablas/facturas/facturaInfo";
+import Historial from "./scenes/tablas/historiales/historial";
+import HistorialInfo from "./scenes/tablas/historiales/historialInfo";
+import Hospitalizacion from "./scenes/tablas/hospitalizaciones/hospitalizacion";
+import HospitalizacionInfo from "./scenes/tablas/hospitalizaciones/hospitalizacionInfo";
+import Indumentaria from "./scenes/tablas/indumentarias/indumentaria";
+import IndumentariaInfo from "./scenes/tablas/indumentarias/indumentariaInfo";
+import Laboratorio from "./scenes/tablas/laboratorios/laboratorio";
+import LaboratorioInfo from "./scenes/tablas/laboratorios/laboratorioInfo";
+import Medicina from "./scenes/tablas/medicinas/medicina";
+import MedicinaInfo from "./scenes/tablas/medicinas/medicinaInfo";
+import Personal from "./scenes/tablas/personalT/personal";
+import PersonalInfo from "./scenes/tablas/personalT/personalInfo";
+import Proveedor from "./scenes/tablas/proveedores/proveedor";
+import ProveedorInfo from "./scenes/tablas/proveedores/proveedorInfo";
+import Receta from "./scenes/tablas/recetas/receta";
+import RecetaInfo from "./scenes/tablas/recetas/recetaInfo";
+import Seguro from "./scenes/tablas/seguros/seguro";
+import SeguroInfo from "./scenes/tablas/seguros/seguroInfo";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -50,6 +76,32 @@ function App() {
               <Route path="/infoMedicos" element={<MedicoInfo />} />
               <Route path="/consultas" element={<Consulta />} />
               <Route path="/infoConsultas" element={<ConsultaInfo />} />
+              <Route path="/departamentos" element={<Departamento />} />
+              <Route path="/infoDepartamentos" element={<DepartamentoInfo />} />
+              <Route path="/derivaciones" element={<Derivacion />} />
+              <Route path="/infoDerivaciones" element={<DerivacionInfo />} />
+              <Route path="/especialidades" element={<Especialidad />} />
+              <Route path="/infoEspecialidades" element={<EspecialidadInfo />} />
+              <Route path="/facturas" element={<Factura />} />
+              <Route path="/infoFacturas" element={<FacturaInfo />} />
+              <Route path="/historiales" element={<Historial />} />
+              <Route path="/infoHistoriales" element={<HistorialInfo />} />
+              <Route path="/hospitalizaciones" element={<Hospitalizacion />} />
+              <Route path="/infoHospitalizaciones" element={<HospitalizacionInfo />} />
+              <Route path="/indumentarias" element={<Indumentaria />} />
+              <Route path="/infoIndumentarias" element={<IndumentariaInfo />} />
+              <Route path="/laboratorios" element={<Laboratorio />} />
+              <Route path="/infoLaboratorios" element={<LaboratorioInfo />} />
+              <Route path="/medicinas" element={<Medicina />} />
+              <Route path="/infoMedicinas" element={<MedicinaInfo />} />
+              <Route path="/personal" element={<Personal />} />
+              <Route path="/infoPersonal" element={<PersonalInfo />} />
+              <Route path="/proveedores" element={<Proveedor />} />
+              <Route path="/infoProveedores" element={<ProveedorInfo />} />
+              <Route path="/recetas" element={<Receta />} />
+              <Route path="/infoRecetas" element={<RecetaInfo />} />
+              <Route path="/seguros" element={<Seguro />} />
+              <Route path="/infoSeguros" element={<SeguroInfo />} />
 
             </Routes>
           </main>
