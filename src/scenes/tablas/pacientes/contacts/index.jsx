@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
-import { Box } from "@mui/material";
+import { Box, useTheme, Button } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../../../theme";
 //import { mockDataContacts } from "../../data/mockData";
+import BorderColorIcon from '@mui/icons-material/BorderColor';
+import DeleteIcon from '@mui/icons-material/Delete';
 import Header from "../../../../components/Header";
-import { useTheme } from "@mui/material";
+//import { useTheme } from "@mui/material";
 import axios from "axios"; // Importa la librería axios para realizar la solicitud HTTP
 
 
@@ -32,6 +34,16 @@ const Contacts = () => {
         console.error("Error al obtener datos desde la API:", error);
       });
   }, []);
+
+  const handleActualizarButtonClick = () => {
+    // Place the action logic here when the button is clicked
+    console.log("Actualizando Paciente...");
+  };
+
+  const handleEliminarButtonClick = () => {
+    // Place the action logic here when the button is clicked
+    console.log("Eliminando Paciente...");
+  };
 
   const columns = [
     { 
@@ -62,9 +74,10 @@ const Contacts = () => {
     {
       field: "sexo_pac",
       headerName: "Sexo",
-      type: "number",
-      headerAlign: "left",
-      align: "left",
+      lex: 1,
+      //type: "number",
+      //headerAlign: "left",
+      //align: "left",
     },
     {
       field: "fecha_nac_pac",
@@ -90,6 +103,42 @@ const Contacts = () => {
       field: "id_hospitalario_pac",
       headerName: "ID.Hospitalario",
       flex: 1,
+    },
+    {
+      field: "actualizar_pac",
+      headerName: "Actualizar",
+      flex: 1,
+      renderCell: ({ row: { access } }) => {
+        return (
+          <Box display="flex" alignItems="center" justifyContent="center">
+            <Button
+              onClick={() => handleActualizarButtonClick(access)}
+              variant="contained"
+              style={{ backgroundColor: colors.greenAccent[600], width: "100%" }}
+              sx={{ textAlign: "center" }} // Center the icon horizontally
+              startIcon={<BorderColorIcon />}
+            />
+          </Box>
+        );
+      },
+    },
+    {
+      field: "eliminar_pac",
+      headerName: "Eliminar",
+      flex: 1,
+      renderCell: ({ row: { access } }) => {
+        return (
+          <Box display="flex" alignItems="center" justifyContent="center">
+            <Button
+              onClick={() => handleEliminarButtonClick(access)}
+              variant="contained"
+              style={{ backgroundColor: colors.greenAccent[600], width: "100%" }}
+              sx={{ textAlign: "center" }} // Center the icon horizontally
+              startIcon={<DeleteIcon />}
+            />
+          </Box>
+        );
+      },
     },
   ];
 
