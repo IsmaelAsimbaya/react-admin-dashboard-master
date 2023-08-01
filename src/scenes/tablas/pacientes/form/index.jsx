@@ -9,10 +9,6 @@ import axios from "axios";
 const Form = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
-  const handleFormSubmit = (values) => {
-    console.log(values);
-  };
-
   // State para manejar el estado de la respuesta de la API
   const [apiResponse, setApiResponse] = useState(null);
   const [apiError, setApiError] = useState(null);
@@ -181,8 +177,28 @@ const Form = () => {
                 name="num_expediente_pac"
                 error={!!touched.num_expediente_pac && !!errors.num_expediente_pac}
                 helperText={touched.num_expediente_pac && errors.num_expediente_pac}
-                sx={{ gridColumn: "span 4" }}
+                sx={{ gridColumn: "span 2" }}
               />
+              <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 2" }} error={!!touched.estado_pac && !!errors.estado_pac}>
+                <Select
+                  value={values.estado_pac}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  name="estado_pac"
+                  displayEmpty
+                  inputProps={{
+                    name: 'estado_pac',
+                    id: 'estado_pac-select',
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Estado
+                  </MenuItem>
+                  <MenuItem value= "true" >Activo</MenuItem>
+                  <MenuItem value= "false">Inactivo</MenuItem>
+                </Select>
+                {touched.estado_pac && errors.estado_pac && <FormHelperText>{errors.estado_pac}</FormHelperText>}
+              </FormControl>
               <TextField
                 fullWidth
                 variant="filled"
@@ -238,6 +254,7 @@ const checkoutSchema = yup.object().shape({
     .matches(phoneRegExp, "El numero no es valido")
     .required("required"),
   num_expediente_pac: yup.string().required("required"),
+  estado_pac: yup.boolean().required("required"),
   id_hospitalario_pac: yup.string().required("required"),
 });
 const initialValues = {
@@ -250,6 +267,7 @@ const initialValues = {
   domicilio_pac: "",
   telefono_pac: "",
   num_expediente_pac: "",
+  estado_pac: null,
   id_hospitalario_pac: "",
 
 

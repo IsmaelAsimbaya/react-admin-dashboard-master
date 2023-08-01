@@ -70,7 +70,7 @@ const Contacts = () => {
     };
 
     // Send the updated data to the API using the PUT method
-    const id = row.id; // Get the id of the row to be updated
+    const id = row.id_pac; // Get the id of the row to be updated
     axios
       .put(`http://localhost:9090/pacientes/${id}`, updatedData)
       .then((response) => {
