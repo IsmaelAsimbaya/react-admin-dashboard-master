@@ -4,7 +4,7 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../../../theme";
 //import { mockDataContacts } from "../../data/mockData";
 import BorderColorIcon from '@mui/icons-material/BorderColor';
-import DeleteIcon from '@mui/icons-material/Delete';
+//import DeleteIcon from '@mui/icons-material/Delete';
 import Header from "../../../../components/Header";
 //import { useTheme } from "@mui/material";
 import axios from "axios"; // Importa la librería axios para realizar la solicitud HTTP
@@ -14,6 +14,21 @@ const Contacts = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [rows, setRows] = useState([]); // Estado para almacenar los datos obtenidos desde la API
+  const color = {
+    greenAccent: {
+      100: "#e7f6e7",
+      200: "#c2e9c2",
+      600: "#00a800",
+      // Add other variants if necessary
+    },
+    red: {
+      100: "#fee5e5",
+      200: "#fcaaaf",
+      600: "#e53935",
+      // Add other variants if necessary
+    },
+    // Add other colors if necessary
+  };
 
   useEffect(() => {
     // Utiliza el hook useEffect para realizar la solicitud a la API al cargar el componente
@@ -35,14 +50,44 @@ const Contacts = () => {
       });
   }, []);
 
-  const handleActualizarButtonClick = () => {
-    // Place the action logic here when the button is clicked
-    console.log("Actualizando Paciente...");
-  };
+  const handleEstadoButtonClick = (row) => {
+    // Invert the estado_pac value when the button is clicked
+    const updatedEstadoPac = !row.estado_pac;
 
-  const handleEliminarButtonClick = () => {
-    // Place the action logic here when the button is clicked
-    console.log("Eliminando Paciente...");
+    // Prepare the data object to be sent in the PUT request
+    const updatedData = {
+      cedula_pac: row.cedula_pac,
+      nombre_pac: row.nombre_pac,
+      apellido_paterno_pac: row.apellido_paterno_pac,
+      apellido_materno_pac: row.apellido_materno_pac,
+      sexo_pac: row.sexo_pac,
+      fecha_nac_pac: row.fecha_nac_pac,
+      domicilio_pac: row.domicilio_pac,
+      telefono_pac: row.telefono_pac,
+      num_expediente_pac: row.num_expediente_pac,
+      id_hospitalario_pac: row.id_hospitalario_pac,
+      estado_pac: updatedEstadoPac, // Use the updated estado_pac value
+    };
+
+    // Send the updated data to the API using the PUT method
+    const id = row.id; // Get the id of the row to be updated
+    axios
+      .put(`http://localhost:9090/pacientes/${id}`, updatedData)
+      .then((response) => {
+        // If the API call is successful, update the state with the new data
+        const updatedRows = rows.map((r) => {
+          if (r.id === row.id) {
+            return { ...r, estado_pac: updatedEstadoPac };
+          }
+          return r;
+        });
+        setRows(updatedRows);
+        console.log("Estado Paciente actualizado en la API.");
+      })
+      .catch((error) => {
+        // Handle errors in case the API call fails
+        console.error("Error al actualizar el estado del Paciente:", error);
+      });
   };
 
   const columns = [
@@ -105,36 +150,19 @@ const Contacts = () => {
       flex: 1,
     },
     {
-      field: "actualizar_pac",
-      headerName: "Actualizar",
+      field: "estado_pac",
+      headerName: "Estado",
       flex: 1,
-      renderCell: ({ row: { access } }) => {
+      renderCell: ({ row }) => {
+        const buttonColor = row.estado_pac ? color.greenAccent[600] : color.red[600];
         return (
           <Box display="flex" alignItems="center" justifyContent="center">
             <Button
-              onClick={() => handleActualizarButtonClick(access)}
+              onClick={() => handleEstadoButtonClick(row)}
               variant="contained"
-              style={{ backgroundColor: colors.greenAccent[600], width: "100%" }}
-              sx={{ textAlign: "center" }} // Center the icon horizontally
+              style={{ backgroundColor: buttonColor, width: "100%" }}
+              sx={{ textAlign: "center" }}
               startIcon={<BorderColorIcon />}
-            />
-          </Box>
-        );
-      },
-    },
-    {
-      field: "eliminar_pac",
-      headerName: "Eliminar",
-      flex: 1,
-      renderCell: ({ row: { access } }) => {
-        return (
-          <Box display="flex" alignItems="center" justifyContent="center">
-            <Button
-              onClick={() => handleEliminarButtonClick(access)}
-              variant="contained"
-              style={{ backgroundColor: colors.greenAccent[600], width: "100%" }}
-              sx={{ textAlign: "center" }} // Center the icon horizontally
-              startIcon={<DeleteIcon />}
             />
           </Box>
         );
