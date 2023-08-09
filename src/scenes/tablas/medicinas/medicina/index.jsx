@@ -9,10 +9,6 @@ import axios from "axios";
 const Form = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
-  const handleFormSubmit = (values) => {
-    console.log(values);
-  };
-
   // State para manejar el estado de la respuesta de la API
   const [apiResponse, setApiResponse] = useState(null);
   const [apiError, setApiError] = useState(null);
@@ -21,7 +17,7 @@ const Form = () => {
    const handleSubmitApi = async (values) => {
     try {
       // Realiza una solicitud POST a la API con los datos del formulario
-      const response = await axios.post("http://localhost:9090/pacientes", values);
+      const response = await axios.post("http://localhost:9090/medicinas", values);
 
       // Maneja la respuesta de la API (opcional)
       setApiResponse(response.data);
@@ -35,7 +31,7 @@ const Form = () => {
 
   return (
     <Box m="20px">
-      <Header title="CREAR MEDICINA" subtitle="Crear un nuevo Perfil de Paciente" />
+      <Header title="CREAR MEDICINA" subtitle="Crear un nuevo Perfil de Medicina" />
 
       <Formik
         onSubmit={handleSubmitApi} // Utiliza la función para enviar los datos a la API
@@ -63,143 +59,98 @@ const Form = () => {
                 fullWidth
                 variant="filled"
                 type="text"
-                label="Cedula"
+                label="Componentes"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.cedula_pac}
-                name="cedula_pac"
-                error={!!touched.cedula_pac && !!errors.cedula_pac}
-                helperText={touched.cedula_pac && errors.cedula_pac}
+                value={values.componentes_medi}
+                name="componentes_medi"
+                error={!!touched.componentes_medi && !!errors.componentes_medi}
+                helperText={touched.componentes_medi && errors.componentes_medi}
                 sx={{ gridColumn: "span 2" }}
               />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Nombres"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.nombre_pac}
-                name="nombre_pac"
-                error={!!touched.nombre_pac && !!errors.nombre_pac}
-                helperText={touched.nombre_pac && errors.nombre_pac}
-                sx={{ gridColumn: "span 2" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Apellido Paterno"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.apellido_paterno_pac}
-                name="apellido_paterno_pac"
-                error={!!touched.apellido_paterno_pac && !!errors.apellido_paterno_pac}
-                helperText={touched.apellido_paterno_pac && errors.apellido_paterno_pac}
-                sx={{ gridColumn: "span 2" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Apellido Materno"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.apellido_materno_pac}
-                name="apellido_materno_pac"
-                error={!!touched.apellido_materno_pac && !!errors.apellido_materno_pac}
-                helperText={touched.apellido_materno_pac && errors.apellido_materno_pac}
-                sx={{ gridColumn: "span 2" }}
-              />
-              <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 2" }} error={!!touched.sexo_pac && !!errors.sexo_pac}>
+              <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 2" }} error={!!touched.disponibilidad_medi && !!errors.disponibilidad_medi}>
                 <Select
-                  value={values.sexo_pac}
+                  value={values.disponibilidad_medi}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  name="sexo_pac"
+                  name="disponibilidad_medi"
                   displayEmpty
                   inputProps={{
-                    name: 'sexo_pac',
-                    id: 'sexo_pac-select',
+                    name: 'disponibilidad_medi',
+                    id: 'disponibilidad_medi-select',
                   }}
                 >
                   <MenuItem value="" disabled>
-                    Sexo
+                    Disponibilidad
                   </MenuItem>
-                  <MenuItem value= "1" >Masculino</MenuItem>
-                  <MenuItem value= "2">Femenino</MenuItem>
+                  <MenuItem value= "true" >Activo</MenuItem>
+                  <MenuItem value= "false">Inactivo</MenuItem>
                 </Select>
-                {touched.sexo_pac && errors.sexo_pac && <FormHelperText>{errors.sexo_pac}</FormHelperText>}
+                {touched.disponibilidad_medi && errors.disponibilidad_medi && <FormHelperText>{errors.disponibilidad_medi}</FormHelperText>}
               </FormControl>
               <TextField
                 fullWidth
                 variant="filled"
-                type="date"
-                label="Fecha de Nacimiento"
+                type="text"
+                label="Cantidad"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.fecha_nac_pac}
-                name="fecha_nac_pac"
-                error={!!touched.fecha_nac_pac && !!errors.fecha_nac_pac}
-                helperText={touched.fecha_nac_pac && errors.fecha_nac_pac}
+                value={values.cantidad_medi}
+                name="cantidad_medi"
+                error={!!touched.cantidad_medi && !!errors.cantidad_medi}
+                helperText={touched.cantidad_medi && errors.cantidad_medi}
                 sx={{ gridColumn: "span 2" }}
               />
               <TextField
                 fullWidth
                 variant="filled"
                 type="text"
-                label="Domicilio"
+                label="ID Proveedor"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.domicilio_pac}
-                name="domicilio_pac"
-                error={!!touched.domicilio_pac && !!errors.domicilio_pac}
-                helperText={touched.domicilio_pac && errors.domicilio_pac}
+                value={values.id_proveedor_medi}
+                name="id_proveedor_medi"
+                error={!!touched.id_proveedor_medi && !!errors.id_proveedor_medi}
+                helperText={touched.id_proveedor_medi && errors.id_proveedor_medi}
                 sx={{ gridColumn: "span 2" }}
               />
               <TextField
                 fullWidth
                 variant="filled"
                 type="text"
-                label="Telefono"
+                label="ID Receta"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.telefono_pac}
-                name="telefono_pac"
-                error={!!touched.telefono_pac && !!errors.telefono_pac}
-                helperText={touched.telefono_pac && errors.telefono_pac}
+                value={values.id_receta_medi}
+                name="id_receta_medi"
+                error={!!touched.id_receta_medi && !!errors.id_receta_medi}
+                helperText={touched.id_receta_medi && errors.id_receta_medi}
                 sx={{ gridColumn: "span 2" }}
               />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Numero de Expediente"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.num_expediente_pac}
-                name="num_expediente_pac"
-                error={!!touched.num_expediente_pac && !!errors.num_expediente_pac}
-                helperText={touched.num_expediente_pac && errors.num_expediente_pac}
-                sx={{ gridColumn: "span 4" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="ID Hospitalario"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.id_hospitalario_pac}
-                name="id_hospitalario_pac"
-                error={!!touched.id_hospitalario_pac && !!errors.id_hospitalario_pac}
-                helperText={touched.id_hospitalario_pac && errors.id_hospitalario_pac}
-                sx={{ gridColumn: "span 4" }}
-              />
+              <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 2" }} error={!!touched.estado_medi && !!errors.estado_medi}>
+                <Select
+                  value={values.estado_medi}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  name="estado_medi"
+                  displayEmpty
+                  inputProps={{
+                    name: 'estado_medi',
+                    id: 'estado_medi-select',
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Estado
+                  </MenuItem>
+                  <MenuItem value= "true" >Activo</MenuItem>
+                  <MenuItem value= "false">Inactivo</MenuItem>
+                </Select>
+                {touched.estado_medi && errors.estado_medi && <FormHelperText>{errors.estado_medi}</FormHelperText>}
+              </FormControl>
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Crear Nuevo Paciente
+                Crear Nueva Medicina
               </Button>
             </Box>
           </form>
@@ -222,37 +173,21 @@ const Form = () => {
   );
 };
 
-const phoneRegExp =
-  /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
-
 const checkoutSchema = yup.object().shape({
-  cedula_pac: yup.string().required("required"),
-  nombre_pac: yup.string().required("required"),
-  apellido_paterno_pac: yup.string().required("required"),
-  apellido_materno_pac: yup.string().required("required"),
-  sexo_pac: yup.number().required("required"),
-  fecha_nac_pac: yup.date().required("required"),
-  domicilio_pac: yup.string().required("required"),
-  telefono_pac: yup
-    .string()
-    .matches(phoneRegExp, "El numero no es valido")
-    .required("required"),
-  num_expediente_pac: yup.string().required("required"),
-  id_hospitalario_pac: yup.string().required("required"),
+  componentes_medi: yup.string().required("required"),
+  disponibilidad_medi: yup.boolean().required("required"),
+  cantidad_medi: yup.number().required("required"),
+  id_proveedor_medi: yup.number().required("required"),
+  id_receta_medi: yup.number().required("required"),
+  estado_medi: yup.boolean().required("required"),
 });
 const initialValues = {
-  cedula_pac:"",
-  nombre_pac: "",
-  apellido_paterno_pac:"",
-  apellido_materno_pac:"",
-  sexo_pac: 0,
-  fecha_nac_pac: "",
-  domicilio_pac: "",
-  telefono_pac: "",
-  num_expediente_pac: "",
-  id_hospitalario_pac: "",
-
-
+  componentes_medi:"",
+  disponibilidad_medi: null,
+  cantidad_medi:0,
+  id_proveedor_medi:0,
+  id_receta_medi: 0,
+  estado_medi: null,
 };
 
 export default Form;

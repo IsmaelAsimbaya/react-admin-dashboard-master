@@ -9,10 +9,6 @@ import axios from "axios";
 const Form = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
-  const handleFormSubmit = (values) => {
-    console.log(values);
-  };
-
   // State para manejar el estado de la respuesta de la API
   const [apiResponse, setApiResponse] = useState(null);
   const [apiError, setApiError] = useState(null);
@@ -21,7 +17,7 @@ const Form = () => {
    const handleSubmitApi = async (values) => {
     try {
       // Realiza una solicitud POST a la API con los datos del formulario
-      const response = await axios.post("http://localhost:9090/pacientes", values);
+      const response = await axios.post("http://localhost:9090/laboratorios", values);
 
       // Maneja la respuesta de la API (opcional)
       setApiResponse(response.data);
@@ -35,7 +31,7 @@ const Form = () => {
 
   return (
     <Box m="20px">
-      <Header title="CREAR LABORATORIO" subtitle="Crear un nuevo Perfil de Paciente" />
+      <Header title="CREAR LABORATORIO" subtitle="Crear un nuevo Perfil de Laboratorio" />
 
       <Formik
         onSubmit={handleSubmitApi} // Utiliza la función para enviar los datos a la API
@@ -63,143 +59,104 @@ const Form = () => {
                 fullWidth
                 variant="filled"
                 type="text"
-                label="Cedula"
+                label="Nombre Paciente"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.cedula_pac}
-                name="cedula_pac"
-                error={!!touched.cedula_pac && !!errors.cedula_pac}
-                helperText={touched.cedula_pac && errors.cedula_pac}
+                value={values.nombre_pac_labo}
+                name="nombre_pac_labo"
+                error={!!touched.nombre_pac_labo && !!errors.nombre_pac_labo}
+                helperText={touched.nombre_pac_labo && errors.nombre_pac_labo}
                 sx={{ gridColumn: "span 2" }}
               />
               <TextField
                 fullWidth
                 variant="filled"
                 type="text"
-                label="Nombres"
+                label="Medico Solicitante"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.nombre_pac}
-                name="nombre_pac"
-                error={!!touched.nombre_pac && !!errors.nombre_pac}
-                helperText={touched.nombre_pac && errors.nombre_pac}
+                value={values.med_solicitante_labo}
+                name="med_solicitante_labo"
+                error={!!touched.med_solicitante_labo && !!errors.med_solicitante_labo}
+                helperText={touched.med_solicitante_labo && errors.med_solicitante_labo}
                 sx={{ gridColumn: "span 2" }}
               />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Apellido Paterno"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.apellido_paterno_pac}
-                name="apellido_paterno_pac"
-                error={!!touched.apellido_paterno_pac && !!errors.apellido_paterno_pac}
-                helperText={touched.apellido_paterno_pac && errors.apellido_paterno_pac}
-                sx={{ gridColumn: "span 2" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Apellido Materno"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.apellido_materno_pac}
-                name="apellido_materno_pac"
-                error={!!touched.apellido_materno_pac && !!errors.apellido_materno_pac}
-                helperText={touched.apellido_materno_pac && errors.apellido_materno_pac}
-                sx={{ gridColumn: "span 2" }}
-              />
-              <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 2" }} error={!!touched.sexo_pac && !!errors.sexo_pac}>
-                <Select
-                  value={values.sexo_pac}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  name="sexo_pac"
-                  displayEmpty
-                  inputProps={{
-                    name: 'sexo_pac',
-                    id: 'sexo_pac-select',
-                  }}
-                >
-                  <MenuItem value="" disabled>
-                    Sexo
-                  </MenuItem>
-                  <MenuItem value= "1" >Masculino</MenuItem>
-                  <MenuItem value= "2">Femenino</MenuItem>
-                </Select>
-                {touched.sexo_pac && errors.sexo_pac && <FormHelperText>{errors.sexo_pac}</FormHelperText>}
-              </FormControl>
               <TextField
                 fullWidth
                 variant="filled"
                 type="date"
-                label="Fecha de Nacimiento"
+                label="Fecha"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.fecha_nac_pac}
-                name="fecha_nac_pac"
-                error={!!touched.fecha_nac_pac && !!errors.fecha_nac_pac}
-                helperText={touched.fecha_nac_pac && errors.fecha_nac_pac}
+                value={values.fecha_labo}
+                name="fecha_labo"
+                error={!!touched.fecha_labo && !!errors.fecha_labo}
+                helperText={touched.fecha_labo && errors.fecha_labo}
                 sx={{ gridColumn: "span 2" }}
               />
               <TextField
                 fullWidth
                 variant="filled"
                 type="text"
-                label="Domicilio"
+                label="Tipo Prueba"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.domicilio_pac}
-                name="domicilio_pac"
-                error={!!touched.domicilio_pac && !!errors.domicilio_pac}
-                helperText={touched.domicilio_pac && errors.domicilio_pac}
+                value={values.tipo_prueba_labo}
+                name="tipo_prueba_labo"
+                error={!!touched.tipo_prueba_labo && !!errors.tipo_prueba_labo}
+                helperText={touched.tipo_prueba_labo && errors.tipo_prueba_labo}
                 sx={{ gridColumn: "span 2" }}
               />
               <TextField
                 fullWidth
                 variant="filled"
                 type="text"
-                label="Telefono"
+                label="ID Personal"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.telefono_pac}
-                name="telefono_pac"
-                error={!!touched.telefono_pac && !!errors.telefono_pac}
-                helperText={touched.telefono_pac && errors.telefono_pac}
+                value={values.id_personal_labo}
+                name="id_personal_labo"
+                error={!!touched.id_personal_labo && !!errors.id_personal_labo}
+                helperText={touched.id_personal_labo && errors.id_personal_labo}
                 sx={{ gridColumn: "span 2" }}
               />
+              <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 2" }} error={!!touched.estado_labo && !!errors.estado_labo}>
+                <Select
+                  value={values.estado_labo}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  name="estado_labo"
+                  displayEmpty
+                  inputProps={{
+                    name: 'estado_labo',
+                    id: 'estado_labo-select',
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Estado
+                  </MenuItem>
+                  <MenuItem value= "true" >Activo</MenuItem>
+                  <MenuItem value= "false">Inactivo</MenuItem>
+                </Select>
+                {touched.estado_labo && errors.estado_labo && <FormHelperText>{errors.estado_labo}</FormHelperText>}
+              </FormControl>
               <TextField
                 fullWidth
                 variant="filled"
                 type="text"
-                label="Numero de Expediente"
+                label="Observaciones"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.num_expediente_pac}
-                name="num_expediente_pac"
-                error={!!touched.num_expediente_pac && !!errors.num_expediente_pac}
-                helperText={touched.num_expediente_pac && errors.num_expediente_pac}
-                sx={{ gridColumn: "span 4" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="ID Hospitalario"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.id_hospitalario_pac}
-                name="id_hospitalario_pac"
-                error={!!touched.id_hospitalario_pac && !!errors.id_hospitalario_pac}
-                helperText={touched.id_hospitalario_pac && errors.id_hospitalario_pac}
+                value={values.observaciones_labo}
+                name="observaciones_labo"
+                error={!!touched.observaciones_labo && !!errors.observaciones_labo}
+                helperText={touched.observaciones_labo && errors.observaciones_labo}
                 sx={{ gridColumn: "span 4" }}
               />
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Crear Nuevo Paciente
+                Crear Nuevo Laboratorio
               </Button>
             </Box>
           </form>
@@ -222,37 +179,23 @@ const Form = () => {
   );
 };
 
-const phoneRegExp =
-  /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
-
 const checkoutSchema = yup.object().shape({
-  cedula_pac: yup.string().required("required"),
-  nombre_pac: yup.string().required("required"),
-  apellido_paterno_pac: yup.string().required("required"),
-  apellido_materno_pac: yup.string().required("required"),
-  sexo_pac: yup.number().required("required"),
-  fecha_nac_pac: yup.date().required("required"),
-  domicilio_pac: yup.string().required("required"),
-  telefono_pac: yup
-    .string()
-    .matches(phoneRegExp, "El numero no es valido")
-    .required("required"),
-  num_expediente_pac: yup.string().required("required"),
-  id_hospitalario_pac: yup.string().required("required"),
+  nombre_pac_labo: yup.string().required("required"),
+  med_solicitante_labo: yup.string().required("required"),
+  fecha_labo: yup.date().required("required"),
+  tipo_prueba_labo: yup.string().required("required"),
+  observaciones_labo: yup.string().required("required"),
+  id_personal_labo: yup.number().required("required"),
+  estado_labo: yup.boolean().required("required"),
 });
 const initialValues = {
-  cedula_pac:"",
-  nombre_pac: "",
-  apellido_paterno_pac:"",
-  apellido_materno_pac:"",
-  sexo_pac: 0,
-  fecha_nac_pac: "",
-  domicilio_pac: "",
-  telefono_pac: "",
-  num_expediente_pac: "",
-  id_hospitalario_pac: "",
-
-
+  nombre_pac_labo:"",
+  med_solicitante_labo: "",
+  fecha_labo:"",
+  tipo_prueba_labo:"",
+  observaciones_labo: "",
+  id_personal_labo: 0,
+  estado_labo: null,
 };
 
 export default Form;
