@@ -46,7 +46,25 @@ import Receta from "./scenes/tablas/recetas/receta";
 import RecetaInfo from "./scenes/tablas/recetas/recetaInfo";
 import Seguro from "./scenes/tablas/seguros/seguro";
 import SeguroInfo from "./scenes/tablas/seguros/seguroInfo";
+
+
 import ActPaciente from "./scenes/tablas/pacientes/pacientesActualizar/index"
+import ActConsulta from "./scenes/tablas/consultas/consultaActualizar/index"
+import ActDepartamento from "./scenes/tablas/departamentos/departamentoActualizar/index"
+import ActDerivacion from "./scenes/tablas/derivaciones/derivacionActualizar/index"
+import ActEspecialidad from "./scenes/tablas/especialidades/especialidadActualizar/index"
+
+import ActFactura from "./scenes/tablas/facturas/facturaActualizar/index"
+import ActHistorial from "./scenes/tablas/historiales/historialActualizar/index"
+import ActHospiralizacion from "./scenes/tablas/hospitalizaciones/hospitalacionActualizar/index"
+import ActIndumentaria from "./scenes/tablas/indumentarias/indumentariaActualizar/index"
+import ActLaboratorio from "./scenes/tablas/laboratorios/laboratorioActualizar/index"
+/*import ActMedicina from "./scenes/tablas/medicinas/medicinaActualizar/index"
+import ActMedico from "./scenes/tablas/medicos/medicoActualizar/index"
+import ActPersonal from "./scenes/tablas/personalT/personalActualizar/index"
+import ActProveedor from "./scenes/tablas/proveedores/proveedorActualizar/index"
+import ActReceta from "./scenes/tablas/recetas/recetaActualizar/index"
+import ActSeguro from "./scenes/tablas/seguros/seguroActualizar/index"*/
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -80,8 +98,16 @@ function App() {
 
               
               <Route path="/actPaciente/:cedula_pac/:nombre_pac/:apellido_paterno_pac/:apellido_materno_pac/:sexo_pac/:fecha_nac_pac/:domicilio_pac/:telefono_pac/:num_expediente_pac/:id_hospitalario_pac/:estado_pac" element={<ActPaciente />} />
-
-
+              <Route path="/actConsulta/:id_cons/:concepto_cons/:id_paciente_cons/:id_medico_cons/:fecha_cons/:estado_cons" element={<ActConsulta />} />
+              <Route path="/actDepartamento/:id_depa/:num_empl_depa/:encargado_id_dep/:oficina_depa/:estado_depart"  element = {<ActDepartamento></ActDepartamento>}></Route>
+              <Route path="/actDerivacion/:id_deri/:descripcion_deri/:id_usuario_deri/:id_med_deri/:fecha_deri/:estado_deri" element={<ActDerivacion />} />
+              <Route path="/actEspecialidad/:id_espe/:encargado_espe/:descripcion_espe/:id_departamento_espe/:estado_espe" element={<ActEspecialidad />} />
+              <Route path="/actFactura/:id_fact/:fecha_emision_fact/:paciente_fact/:descripcion_fact/:monto_fact/:metodo_pago_fact/:id_receta_fact/:estado_fact" element={<ActFactura />} />
+              <Route path="/actHistorial/:id_hist/:id_consulta_hist/:id_paciente_hist/:estado_hist" element={<ActHistorial />} />
+              <Route path="/actHospitalizacion/:id_hosp/:fecha_inic_hosp/:fecha_fin_hosp/:personal_encarg_hosp/:descripcion_hosp/:estado_hosp" element={<ActHospiralizacion />} />
+              <Route path="/actIndumentaria/:id_indu/:concepto_indu/:ubicacion_indu/:area_indu/:id_laboratorio_indu/:estado_indu" element={<ActIndumentaria />} />
+              <Route path="/actLaboratorio/:id_labo/:nombre_pac_labo/:med_solicitante_labo/:fecha_labo/:tipo_prueba_labo/:observaciones_labo/:id_personal_labo/:estado_labo" element={<ActLaboratorio />} />
+              
 
 
 

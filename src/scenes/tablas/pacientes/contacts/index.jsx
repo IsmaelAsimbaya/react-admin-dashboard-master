@@ -113,11 +113,6 @@ const Contacts = () => {
     navigate(`/actPaciente/${cedula_pac}/${nombre_pac}/${apellido_paterno_pac}/${apellido_materno_pac}/${sexo_pac}/${fecha_nac_pac}/${domicilio_pac}
     /${telefono_pac}/${num_expediente_pac}/${id_hospitalario_pac}/${estado_pac}`)
     
-    
-    return (
-      <ActPaciente/>
-
-    )
   }
 
   const columns = [

@@ -5,15 +5,84 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../../../components/Header";
 import { useState } from "react";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
-
-const Form = () => {
+const ActFactura = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   // State para manejar el estado de la respuesta de la API
   const [apiResponse, setApiResponse] = useState(null);
   const [apiError, setApiError] = useState(null);
+  const {
+    id_fact, 
+    fecha_emision_fact,
+    paciente_fact,
+    descripcion_fact,
+    monto_fact,
+    metodo_pago_fact,
+    id_receta_fact,
+    estado_fact,
+  } = useParams(); 
+  console.log(fecha_emision_fact); 
+  const [rows, setRows] = useState([]);
 
+  const initialValues = {
+    fecha_emision_fact:fecha_emision_fact,
+    paciente_fact:paciente_fact,
+    descripcion_fact:descripcion_fact,
+    monto_fact:monto_fact,
+    metodo_pago_fact:metodo_pago_fact,
+    id_receta_fact:id_receta_fact,
+    estado_fact:estado_fact,
+  };
+
+  const handleUpdate = async (row) => {
+    
+    // Invert the estado_pac value when the button is clicked
+    
+    //const navigate = useNavigate();
+
+    // Prepare the data object to be sent in the PUT request
+    const updatedData = {
+      
+      fecha_emision_fact: row.fecha_emision_fact,
+      paciente_fact: row.paciente_fact,
+      descripcion_fact: row.descripcion_fact,
+      monto_fact: row.monto_fact,
+      metodo_pago_fact: row.metodo_pago_fact,
+      id_receta_fact: row.id_receta_fact,
+      estado_fact: row.estado_fact,
+     
+    };
+
+    // Send the updated data to the API using the PUT method
+
+   
+    try {
+
+      await axios.put(`http://localhost:9090/facturas/${id_fact}`, updatedData);
+      const updatedRows = rows.map((r) => {
+        if (r.id === row.id) {
+          return { ...r, estado_fact: row.estado_fact };
+        }
+        return r;
+      });
+      setRows(updatedRows);
+      console.log("Estado Factura actualizado en la API.");
+      alert("Se ha modificado los datos del PacienFacturate");
+    }
+    catch (error) {
+      console.error("Error al obtener datos del Factura:", error);
+      alert("No se pudieron modificar los datos de Factura");
+    };
+    row.paciente_fact= "";
+    row.descripcion_fact="";
+    row.monto_fact="";
+    row.metodo_pago_fact= "";
+    row.id_receta_fact= 0;
+    row.fecha_emision_fact="";
+    row.estado_fact= null;
+  };
    // Función para enviar los datos del formulario a la API
    const handleSubmitApi = async (values) => {
     try {
@@ -32,10 +101,10 @@ const Form = () => {
 
   return (
     <Box m="20px">
-      <Header title="CREAR FACTURA" subtitle="Crear una nueva Factura" />
+      <Header title="ACTUALIZAR FACTURA" subtitle="Actualizar Factura" />
 
       <Formik
-        onSubmit={handleSubmitApi} // Utiliza la función para enviar los datos a la API
+        onSubmit={handleUpdate} // Utiliza la función para enviar los datos a la API
         initialValues={initialValues}
         validationSchema={checkoutSchema}
       >
@@ -166,7 +235,7 @@ const Form = () => {
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Crear Nuevo Paciente
+                ACtualizar Factura
               </Button>
             </Box>
           </form>
@@ -210,4 +279,4 @@ const initialValues = {
 
 };
 
-export default Form;
+export default ActFactura;

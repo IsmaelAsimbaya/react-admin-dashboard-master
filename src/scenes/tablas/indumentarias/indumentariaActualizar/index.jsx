@@ -5,36 +5,80 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../../../components/Header";
 import { useState } from "react";
 import axios from "axios";
+import { useParams } from "react-router-dom";
+const ActIndumentaria = () => {
+  const {
+    id_indu, 
+    concepto_indu,
+    ubicacion_indu,
+    area_indu,
+    id_laboratorio_indu,
+    estado_indu,
+  } = useParams(); 
+  const [rows, setRows] = useState([]);
+  const initialValues = {
+    concepto_indu: concepto_indu,
+    ubicacion_indu: ubicacion_indu,
+    area_indu: area_indu,
+    id_laboratorio_indu: id_laboratorio_indu,
+    estado_indu: estado_indu,
 
-const Form = () => {
+  };
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   // State para manejar el estado de la respuesta de la API
   const [apiResponse, setApiResponse] = useState(null);
   const [apiError, setApiError] = useState(null);
+  const handleUpdate = async (row) => {
+    
+    // Invert the estado_pac value when the button is clicked
+    
+    //const navigate = useNavigate();
 
-   // Función para enviar los datos del formulario a la API
-   const handleSubmitApi = async (values) => {
+    // Prepare the data object to be sent in the PUT request
+    const updatedData = {
+      
+      concepto_indu: row.concepto_indu,
+      ubicacion_indu: row.ubicacion_indu,
+      area_indu: row.area_indu,
+      id_laboratorio_indu: row.id_laboratorio_indu,
+      estado_indu: row.estado_indu,
+     
+    };
+
+    // Send the updated data to the API using the PUT method
+
+   
     try {
-      // Realiza una solicitud POST a la API con los datos del formulario
-      const response = await axios.post("http://localhost:9090/indumentaria", values);
 
-      // Maneja la respuesta de la API (opcional)
-      setApiResponse(response.data);
-      setApiError(null);
-    } catch (error) {
-      // Maneja los errores de la API (opcional)
-      setApiResponse(null);
-      setApiError(error.message || "Hubo un error al conectar con la API.");
+      await axios.put(`http://localhost:9090/indumentaria/${id_indu}`, updatedData);
+      const updatedRows = rows.map((r) => {
+        if (r.id === row.id) {
+          return { ...r, estado_indu: row.estado_indu };
+        }
+        return r;
+      });
+      setRows(updatedRows);
+      console.log("Estado Indumentaria actualizado en la API.");
+      alert("Se ha modificado los datos del Indumentaria");
     }
+    catch (error) {
+      console.error("Error al obtener datos del Indumentaria:", error);
+      alert("No se pudieron modificar los datos de Indumentaria");
+    };
+    row.concepto_indu = ""; 
+    row.ubicacion_indu= ""; 
+    row.area_indu = ""; 
+    row.id_laboratorio_indu = ""; 
+    row.estado_indu= null;
   };
 
   return (
     <Box m="20px">
-      <Header title="CREAR INDUMENTARIA" subtitle="Crear un nuevo Perfil de Indumentaria" />
+      <Header title="ACTUALIZAR INDUMENTARIA" subtitle="Actualizar Perfil de Indumentaria" />
 
       <Formik
-        onSubmit={handleSubmitApi} // Utiliza la función para enviar los datos a la API
+        onSubmit={handleUpdate} // Utiliza la función para enviar los datos a la API
         initialValues={initialValues}
         validationSchema={checkoutSchema}
       >
@@ -131,7 +175,7 @@ const Form = () => {
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Crear Nueva Indumentaria
+              Actualizar Indumentaria
               </Button>
             </Box>
           </form>
@@ -161,12 +205,5 @@ const checkoutSchema = yup.object().shape({
   id_laboratorio_indu: yup.string().required("required"),
   estado_indu: yup.boolean().required("required"),
 });
-const initialValues = {
-  concepto_indu:"",
-  ubicacion_indu: "",
-  area_indu:"",
-  id_laboratorio_indu:"",
-  estado_indu: null,
-};
 
-export default Form;
+export default ActIndumentaria;

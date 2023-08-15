@@ -5,14 +5,71 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../../../components/Header";
 import { useState } from "react";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
-const Form = () => {
+const ActEspecialidad = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   // State para manejar el estado de la respuesta de la API
   const [apiResponse, setApiResponse] = useState(null);
   const [apiError, setApiError] = useState(null);
 
+  const {
+    id_espe,
+    encargado_espe, 
+    descripcion_espe,
+    id_departamento_espe,
+    estado_espe,
+  } = useParams(); 
+
+  const [rows, setRows] = useState([]);
+  const initialValues = {
+
+    encargado_espe: encargado_espe,
+    descripcion_espe: descripcion_espe,
+    id_departamento_espe: id_departamento_espe,
+    estado_espe: estado_espe, 
+  };
+  const handleUpdate = async (row) => {
+    
+    // Invert the estado_pac value when the button is clicked
+    
+    //const navigate = useNavigate();
+
+    // Prepare the data object to be sent in the PUT request
+    const updatedData = {
+      encargado_espe: row.encargado_espe,
+      descripcion_espe: row.descripcion_espe,
+      id_departamento_espe: row.id_departamento_espe,
+      estado_espe: row.estado_espe,
+     
+    };
+
+    // Send the updated data to the API using the PUT method
+
+   
+    try {
+
+      await axios.put(`http://localhost:9090/especialidades/${id_espe}`, updatedData);
+      const updatedRows = rows.map((r) => {
+        if (r.id === row.id) {
+          return { ...r, estado_espe: row.estado_espe };
+        }
+        return r;
+      });
+      setRows(updatedRows);
+      console.log("Estado Especialidad actualizado en la API.");
+      alert("Se ha modificado los datos del Especialidad");
+    }
+    catch (error) {
+      console.error("Error al obtener datos del Especialidad:", error);
+      alert("No se pudieron modificar los datos de Especialidad");
+    };
+    row.encargado_espe = "";
+    row.descripcion_espe= "";
+    row.id_departamento_espe = 0;
+    row.estado_espe = null; 
+  };
    // Función para enviar los datos del formulario a la API
    const handleSubmitApi = async (values) => {
     try {
@@ -31,10 +88,10 @@ const Form = () => {
 
   return (
     <Box m="20px">
-      <Header title="CREAR ESPECIALIDAD" subtitle="Crear una nueva Especialidad" />
+      <Header title="ACTUALIZAR ESPECIALIDAD" subtitle="Actualizar especialidad" />
 
       <Formik
-        onSubmit={handleSubmitApi} // Utiliza la función para enviar los datos a la API
+        onSubmit={handleUpdate} // Utiliza la función para enviar los datos a la API
         initialValues={initialValues}
         validationSchema={checkoutSchema}
       >
@@ -118,7 +175,7 @@ const Form = () => {
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Crear Nueva Especialidad
+                Actualizar especialidad
               </Button>
             </Box>
           </form>
@@ -156,4 +213,4 @@ const initialValues = {
 
 };
 
-export default Form;
+export default ActEspecialidad;

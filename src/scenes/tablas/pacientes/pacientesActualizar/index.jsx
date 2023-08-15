@@ -60,8 +60,6 @@ const ActPaciente = () => {
   }, []);
   const handleUpdate = async (row) => {
     // Invert the estado_pac value when the button is clicked
-    const updatedEstadoPac = !row.estado_pac;
-    //const navigate = useNavigate();
 
     // Prepare the data object to be sent in the PUT request
     const updatedData = {
@@ -75,7 +73,7 @@ const ActPaciente = () => {
       telefono_pac: row.telefono_pac,
       num_expediente_pac: row.num_expediente_pac,
       id_hospitalario_pac: row.id_hospitalario_pac,
-      estado_pac: updatedEstadoPac, // Use the updated estado_pac value
+      estado_pac: row.estado_pac, // Use the updated estado_pac value
     };
 
     // Send the updated data to the API using the PUT method
@@ -85,7 +83,7 @@ const ActPaciente = () => {
         await axios.put(`http://localhost:9090/pacientes/${pacienteId}`, updatedData);
         const updatedRows = rows.map((r) => {
           if (r.id === row.id) {
-            return { ...r, estado_pac: updatedEstadoPac };
+            return { ...r, estado_pac: row.estado_pac };
           }
           return r;
         });

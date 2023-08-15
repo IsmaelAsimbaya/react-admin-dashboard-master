@@ -1,12 +1,68 @@
-import { Box, Button, TextField, FormControl, InputLabel, Select, MenuItem, FormHelperText, Typography   } from "@mui/material";
+import { Box, Button, TextField, FormControl, Select, MenuItem, FormHelperText, Typography,InputLabel   } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../../../components/Header";
 import { useState } from "react";
 import axios from "axios";
+import { useParams } from "react-router-dom";
+const ActDepartamento = () => {
+  const {
+    id_depa, 
+    num_empl_depa, 
+    encargado_id_dep,
+    oficina_depa,
+    estado_depart,
+    
+  } = useParams(); 
+  console.log(oficina_depa);
+  const [rows, setRows] = useState([]);
+  const initialValues = {
 
-const Form = () => {
+    id_depa: id_depa,
+    num_empl_depa: num_empl_depa,
+    encargado_id_dep: encargado_id_dep,
+    oficina_depa: oficina_depa,
+    estado_depart: estado_depart,
+
+  };
+  
+  const handleUpdate = async (row) => {
+
+    const updatedData = {
+      num_empl_depa: row.num_empl_depa,
+      encargado_id_dep: row.encargado_id_dep,
+      oficina_depa: row.oficina_depa,
+      estado_depart: row.estado_depart,
+
+    };
+
+    // Send the updated data to the API using the PUT method
+
+   
+    try {
+      
+      await axios.put(`http://localhost:9090/departamentos/${id_depa}`, updatedData);
+      const updatedRows = rows.map((r) => {
+        if (r.id === row.id) {
+          return { ...r, estado_pac: row.estado_cons };
+        }
+        return r;
+      });
+      setRows(updatedRows);
+      console.log("Estado Departamento actualizado en la API.");
+      alert("Se ha modificado los datos del Departamento");
+    }
+    catch (error) {
+      console.error("Error al obtener datos del Departamento:", error);
+      alert("No se pudieron modificar los datos de Departamento");
+    };
+    row.num_empl_depa = 0;
+    row.encargado_id_dep = 0;
+    row.oficina_depa = "";
+    row.estado_depart = null;
+  };
+  
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   // State para manejar el estado de la respuesta de la API
@@ -17,7 +73,7 @@ const Form = () => {
    const handleSubmitApi = async (values) => {
     try {
       // Realiza una solicitud POST a la API con los datos del formulario
-      const response = await axios.post("http://localhost:9090/derivaciones", values);
+      const response = await axios.post("http://localhost:9090/departamentos", values);
 
       // Maneja la respuesta de la API (opcional)
       setApiResponse(response.data);
@@ -31,10 +87,10 @@ const Form = () => {
 
   return (
     <Box m="20px">
-      <Header title="CREAR DERIVACIÓN" subtitle="Crear una nueva derivacion" />
+      <Header title="ACTUALIZAR DEPARTAMENTO" subtitle="Actualizar un Departamento" />
 
       <Formik
-        onSubmit={handleSubmitApi} // Utiliza la función para enviar los datos a la API
+        onSubmit={handleUpdate} // Utiliza la función para enviar los datos a la API
         initialValues={initialValues}
         validationSchema={checkoutSchema}
       >
@@ -59,52 +115,52 @@ const Form = () => {
                 fullWidth
                 variant="filled"
                 type="text"
-                label="ID Usuario"
+                label="N.Empleado"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.id_usuario_deri}
-                name="id_usuario_deri"
-                error={!!touched.id_usuario_deri && !!errors.id_usuario_deri}
-                helperText={touched.id_usuario_deri && errors.id_usuario_deri}
+                value={values.num_empl_depa}
+                name="num_empl_depa"
+                error={!!touched.num_empl_depa && !!errors.num_empl_depa}
+                helperText={touched.num_empl_depa && errors.num_empl_depa}
                 sx={{ gridColumn: "span 2" }}
               />
               <TextField
                 fullWidth
                 variant="filled"
                 type="text"
-                label="ID Medico"
+                label="ID Encargado"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.id_med_deri}
-                name="id_med_deri"
-                error={!!touched.id_med_deri && !!errors.id_med_deri}
-                helperText={touched.id_med_deri && errors.id_med_deri}
+                value={values.encargado_id_dep}
+                name="encargado_id_dep"
+                error={!!touched.encargado_id_dep && !!errors.encargado_id_dep}
+                helperText={touched.encargado_id_dep && errors.encargado_id_dep}
                 sx={{ gridColumn: "span 2" }}
               />
               <TextField
                 fullWidth
                 variant="filled"
-                type="date"
-                label="Fecha"
+                type="text"
+                label="Oficina"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.fecha_deri}
-                name="fecha_deri"
-                error={!!touched.fecha_deri && !!errors.fecha_deri}
-                helperText={touched.fecha_deri && errors.fecha_deri}
+                value={values.oficina_depa}
+                name="oficina_depa"
+                error={!!touched.oficina_depa && !!errors.oficina_depa}
+                helperText={touched.oficina_depa && errors.oficina_depa}
                 sx={{ gridColumn: "span 2" }}
               />
-              <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 2" }} error={!!touched.estado_deri && !!errors.estado_deri}>
+              <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 2" }} error={!!touched.estado_depart && !!errors.estado_depart}>
               <InputLabel htmlFor="sexo_pac-select" sx={{ fontSize: 14 }}>Estado</InputLabel>
                 <Select
-                  value={values.estado_deri}
+                  value={values.estado_depart}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  name="estado_deri"
+                  name="estado_depart"
                   displayEmpty
                   inputProps={{
-                    name: 'estado_deri',
-                    id: 'estado_deri-select',
+                    name: 'estado_depart',
+                    id: 'estado_depart-select',
                   }}
                 >
                   <MenuItem value="" disabled>
@@ -113,25 +169,12 @@ const Form = () => {
                   <MenuItem value= "true" >Activo</MenuItem>
                   <MenuItem value= "false">Inactivo</MenuItem>
                 </Select>
-                {touched.estado_deri && errors.estado_deri && <FormHelperText>{errors.estado_deri}</FormHelperText>}
+                {touched.estado_depart && errors.estado_depart && <FormHelperText>{errors.estado_depart}</FormHelperText>}
               </FormControl>
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Descripcion"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.descripcion_deri}
-                name="descripcion_deri"
-                error={!!touched.descripcion_deri && !!errors.descripcion_deri}
-                helperText={touched.descripcion_deri && errors.descripcion_deri}
-                sx={{ gridColumn: "span 4" }}
-              />
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Crear Nueva Derivacion
+                Actualizar Departamento
               </Button>
             </Box>
           </form>
@@ -155,20 +198,18 @@ const Form = () => {
 };
 
 const checkoutSchema = yup.object().shape({
-  id_usuario_deri: yup.string().required("required"),
-  descripcion_deri: yup.string().required("required"),
-  fecha_deri: yup.date().required("required"),
-  id_med_deri: yup.number().required("required"),
-  estado_deri: yup.boolean().required("required"),
+  num_empl_depa: yup.number().required("required"),
+  encargado_id_dep: yup.string().required("required"),
+  oficina_depa: yup.string().required("required"),
+  estado_depart: yup.boolean().required("required"),
 });
 const initialValues = {
-  id_usuario_deri:"",
-  descripcion_deri: "",
-  fecha_deri:"",
-  id_med_deri:0,
-  estado_deri: null,
+  num_empl_depa:0,
+  encargado_id_dep: "",
+  oficina_depa:"",
+  estado_depart:null,
 
 
 };
 
-export default Form;
+export default ActDepartamento;

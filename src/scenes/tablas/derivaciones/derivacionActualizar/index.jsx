@@ -5,10 +5,73 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../../../components/Header";
 import { useState } from "react";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
-const Form = () => {
+const ActDerivacion = () => {
+  const {
+    id_deri, 
+    descripcion_deri,
+    id_usuario_deri,
+    id_med_deri,
+    fecha_deri,
+    estado_deri,
+  } = useParams(); 
+  const [rows, setRows] = useState([]);
+  const initialValues = {
+
+    id_usuario_deri: id_usuario_deri,
+    descripcion_deri: descripcion_deri,
+    fecha_deri: fecha_deri,
+    id_med_deri: id_med_deri,
+    estado_deri: estado_deri,
+
+
+  };
+  const handleUpdate = async (row) => {
+    
+    // Invert the estado_pac value when the button is clicked
+    
+    //const navigate = useNavigate();
+
+    // Prepare the data object to be sent in the PUT request
+    const updatedData = {
+      id_usuario_deri: row.id_usuario_deri,
+      descripcion_deri: row.descripcion_deri,
+      fecha_deri: row.fecha_deri,
+      id_med_deri: row.id_med_deri,
+      estado_deri: row.estado_deri,
+     
+    };
+    console.log(descripcion_deri); 
+    // Send the updated data to the API using the PUT method
+
+   
+    try {
+
+      await axios.put(`http://localhost:9090/derivaciones/${id_deri}`, updatedData);
+      const updatedRows = rows.map((r) => {
+        if (r.id === row.id) {
+          return { ...r, estado_deri: row.estado_deri };
+        }
+        return r;
+      });
+      setRows(updatedRows);
+      console.log("Estado Derivacion actualizado en la API.");
+      alert("Se ha modificado los datos del Derivacion");
+    }
+    catch (error) {
+      console.error("Error al obtener datos del Derivacion:", error);
+      alert("No se pudieron modificar los datos de Derivacion");
+    };
+    row.id_usuario_deri = 0;
+    row.descripcion_deri = "";
+    row.fecha_deri = "";
+    row.id_med_deri = 0;
+    row.estado_deri = null;
+  };
+
+
   const isNonMobile = useMediaQuery("(min-width:600px)");
-
   // State para manejar el estado de la respuesta de la API
   const [apiResponse, setApiResponse] = useState(null);
   const [apiError, setApiError] = useState(null);
@@ -31,10 +94,10 @@ const Form = () => {
 
   return (
     <Box m="20px">
-      <Header title="CREAR DERIVACIÓN" subtitle="Crear una nueva derivacion" />
+      <Header title="ACTUALIZAR DERIVACIÓN" subtitle="Actualizar derivacion" />
 
       <Formik
-        onSubmit={handleSubmitApi} // Utiliza la función para enviar los datos a la API
+        onSubmit={handleUpdate} // Utiliza la función para enviar los datos a la API
         initialValues={initialValues}
         validationSchema={checkoutSchema}
       >
@@ -131,7 +194,7 @@ const Form = () => {
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Crear Nueva Derivacion
+                Actualizar Derivacion
               </Button>
             </Box>
           </form>
@@ -171,4 +234,4 @@ const initialValues = {
 
 };
 
-export default Form;
+export default ActDerivacion;

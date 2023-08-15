@@ -4,7 +4,7 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../../../theme";
 //import { mockDataContacts } from "../../data/mockData";
 import BorderColorIcon from '@mui/icons-material/BorderColor';
-
+import { useNavigate } from 'react-router-dom';
 import Header from "../../../../components/Header";
 //import { useTheme } from "@mui/material";
 import axios from "axios"; // Importa la librería axios para realizar la solicitud HTTP
@@ -49,6 +49,7 @@ const Contacts = () => {
         console.error("Error al obtener datos desde la API:", error);
       });
   }, []);
+  const navigate = useNavigate();
 
   const handleEstadoButtonClick = (row) => {
     // Invert the estado_cons value when the button is clicked
@@ -84,11 +85,25 @@ const Contacts = () => {
       });
   };
 
+  const editar = (props) => {
+    const {
+      id_cons, 
+      concepto_cons,
+      id_paciente_cons,
+      id_medico_cons,
+      fecha_cons,
+      estado_cons,
+    }= props;
+    
+  navigate(`/actConsulta/${id_cons}/${concepto_cons}/${id_paciente_cons}/${id_medico_cons}/
+  ${fecha_cons}/${estado_cons}`); 
+   
+  }
   const columns = [
-    { 
-      field: "id_cons", 
-      headerName: "ID", 
-      flex: 0.5 
+    {
+      field: "id_cons",
+      headerName: "ID",
+      flex: 0.5
     },
     {
       field: "id_paciente_cons",
@@ -126,6 +141,14 @@ const Contacts = () => {
               style={{ backgroundColor: buttonColor, width: "100%" }}
               sx={{ textAlign: "center" }}
               startIcon={<BorderColorIcon />}
+            />
+             <Button
+              onClick={() => editar(row)}
+              varian  t="variable"
+              style={{ backgroundColor: color.greenAccent[200], width: "30%" }}
+              sx={{ textAlign: "center" }}
+              startIcon={<BorderColorIcon />}
+              
             />
           </Box>
         );

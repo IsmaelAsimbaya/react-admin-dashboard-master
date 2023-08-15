@@ -1,20 +1,83 @@
-import { Box, Button, TextField, FormControl, Select, MenuItem, FormHelperText, Typography, InputLabel   } from "@mui/material";
+import { Box, Button, TextField, FormControl, Select, MenuItem, FormHelperText, Typography, InputLabel } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../../../components/Header";
 import { useState } from "react";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
-const Form = () => {
+const ActConsulta = () => {
+
+  const {
+    id_cons, 
+    concepto_cons,
+    id_paciente_cons,
+    id_medico_cons,
+    fecha_cons,
+    estado_cons,
+  } = useParams();
+  const [rows, setRows] = useState([]);
+  
+  const initialValues = {
+
+    concepto_cons: concepto_cons,
+    id_paciente_cons: id_paciente_cons,
+    id_medico_cons: id_medico_cons,
+    fecha_cons: fecha_cons,
+    estado_cons: estado_cons,
+
+  };
+  const handleUpdate = async (row) => {
+    
+    // Invert the estado_pac value when the button is clicked
+    
+    //const navigate = useNavigate();
+
+    // Prepare the data object to be sent in the PUT request
+    const updatedData = {
+      
+      concepto_cons: row.concepto_cons,
+      id_paciente_cons: row.id_paciente_cons,
+      id_medico_cons: row.id_medico_cons,
+      fecha_cons: row.fecha_cons,
+      estado_cons: row.estado_cons,
+     
+    };
+
+    // Send the updated data to the API using the PUT method
+
+   
+    try {
+      await axios.put(`http://localhost:9090/consultas/${id_cons}`, updatedData);
+      const updatedRows = rows.map((r) => {
+        if (r.id === row.id) {
+          return { ...r, estado_pac: row.estado_cons };
+        }
+        return r;
+      });
+      setRows(updatedRows);
+      console.log("Estado Consulta actualizado en la API.");
+      alert("Se ha modificado los datos del Consulta");
+    }
+    catch (error) {
+      console.error("Error al obtener datos del Consulta:", error);
+      alert("No se pudieron modificar los datos de Consulta");
+    };
+    row.concepto_cons = "";
+    row.id_paciente_cons = 0;
+    row.id_medico_cons = 0;
+    row.fecha_cons = "";
+    row.estado = null;
+  };
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   // State para manejar el estado de la respuesta de la API
   const [apiResponse, setApiResponse] = useState(null);
   const [apiError, setApiError] = useState(null);
 
-   // Función para enviar los datos del formulario a la API
-   const handleSubmitApi = async (values) => {
+  // Función para enviar los datos del formulario a la API
+  const handleSubmitApi = async (values) => {
     try {
       // Realiza una solicitud POST a la API con los datos del formulario
       const response = await axios.post("http://localhost:9090/consultas", values);
@@ -34,7 +97,7 @@ const Form = () => {
       <Header title="CREAR CONSULTA" subtitle="Crear una nueva Consulta" />
 
       <Formik
-        onSubmit={handleSubmitApi} // Utiliza la función para enviar los datos a la API
+        onSubmit={handleUpdate} // Utiliza la función para enviar los datos a la API
         initialValues={initialValues}
         validationSchema={checkoutSchema}
       >
@@ -108,7 +171,7 @@ const Form = () => {
                 sx={{ gridColumn: "span 2" }}
               />
               <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 2" }} error={!!touched.estado_cons && !!errors.estado_cons}>
-              <InputLabel htmlFor="sexo_pac-select" sx={{ fontSize: 14 }}>Estado</InputLabel>              
+                <InputLabel htmlFor="sexo_pac-select" sx={{ fontSize: 14 }}>Estado</InputLabel>
                 <Select
                   value={values.estado_cons}
                   onChange={handleChange}
@@ -123,15 +186,15 @@ const Form = () => {
                   <MenuItem value="" disabled>
                     Estado
                   </MenuItem>
-                  <MenuItem value= "true" >Activo</MenuItem>
-                  <MenuItem value= "false">Inactivo</MenuItem>
+                  <MenuItem value="true" >Activo</MenuItem>
+                  <MenuItem value="false">Inactivo</MenuItem>
                 </Select>
                 {touched.estado_cons && errors.estado_cons && <FormHelperText>{errors.estado_cons}</FormHelperText>}
               </FormControl>
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Crear Consulta
+                Actualizar Consulta
               </Button>
             </Box>
           </form>
@@ -162,13 +225,13 @@ const checkoutSchema = yup.object().shape({
   estado_cons: yup.boolean().required("required"),
 });
 const initialValues = {
-  concepto_cons:"",
+  concepto_cons: "",
   id_paciente_cons: 0,
-  id_medico_cons:0,
-  fecha_cons:"",
+  id_medico_cons: 0,
+  fecha_cons: "",
   estado_cons: null,
 
 
 };
 
-export default Form;
+export default ActConsulta;

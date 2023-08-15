@@ -8,7 +8,7 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
 import Header from "../../../../components/Header";
 //import { useTheme } from "@mui/material";
 import axios from "axios"; // Importa la librería axios para realizar la solicitud HTTP
-
+import { useNavigate} from 'react-router-dom';
 
 const Contacts = () => {
   const theme = useTheme();
@@ -29,7 +29,17 @@ const Contacts = () => {
     },
     // Add other colors if necessary
   };
-
+  const navigate = useNavigate(); 
+  const editar = (props) => {
+    const {
+      id_espe, 
+      encargado_espe,
+      descripcion_espe,
+      id_departamento_espe,
+      estado_espe,
+    }= props;
+  navigate(`/actEspecialidad/${id_espe}/${encargado_espe}/${descripcion_espe}/${id_departamento_espe}/${estado_espe}`); 
+  }
   useEffect(() => {
     // Utiliza el hook useEffect para realizar la solicitud a la API al cargar el componente
     axios
@@ -120,6 +130,15 @@ const Contacts = () => {
               sx={{ textAlign: "center" }}
               startIcon={<BorderColorIcon />}
             />
+            <Button
+              onClick={() => editar(row)}
+              varian  t="variable"
+              style={{ backgroundColor: color.greenAccent[200], width: "30%" }}
+              sx={{ textAlign: "center" }}
+              startIcon={<BorderColorIcon />}
+              
+            />
+
           </Box>
         );
       },

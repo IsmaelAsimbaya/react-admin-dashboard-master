@@ -5,36 +5,76 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../../../components/Header";
 import { useState } from "react";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
-const Form = () => {
+const ActHistorial = () => {
+
+  const {
+    id_hist,
+    id_consulta_hist,
+    id_paciente_hist,
+    estado_hist,
+  } = useParams();
+  const [rows, setRows] = useState([]);
+  const initialValues = {
+
+    id_consulta_hist: id_consulta_hist,
+    id_paciente_hist: id_paciente_hist,
+    estado_hist: estado_hist,
+
+  };
+
+  const handleUpdate = async (row) => {
+    
+    // Invert the estado_pac value when the button is clicked
+    
+    //const navigate = useNavigate();
+
+    // Prepare the data object to be sent in the PUT request
+    const updatedData = {
+      id_consulta_hist: row.id_consulta_hist,
+      id_paciente_hist: row.id_paciente_hist,
+      estado_hist: row.estado_hist,
+    };
+
+   // console.log("Consulta", id_consulta_hist);
+    // console.log("Paciente", id_paciente_hist);
+
+   
+    try {
+      console.log(updatedData); 
+      await axios.put(`http://localhost:9090/historial/${id_hist}`, updatedData);
+      
+      const updatedRows = rows.map((r) => {
+        if (r.id === row.id) {
+          return { ...r, estado_hist: row.estado_hist };
+        }
+        return r;
+      });
+      setRows(updatedRows);
+      console.log("Estado Historial actualizado en la API.");
+      alert("Se ha modificado los datos del Historial");
+    }
+    catch (error) {
+      console.error("Error al obtener datos del Historial:", error);
+      alert("No se pudieron modificar los datos de Historial");
+    };
+    row.id_consulta_hist = 0; 
+    row.id_paciente_hist = 0; 
+    row.estado_hist = null; 
+  };
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   // State para manejar el estado de la respuesta de la API
   const [apiResponse, setApiResponse] = useState(null);
   const [apiError, setApiError] = useState(null);
 
-   // Función para enviar los datos del formulario a la API
-   const handleSubmitApi = async (values) => {
-    try {
-      // Realiza una solicitud POST a la API con los datos del formulario
-      const response = await axios.post("http://localhost:9090/historial", values);
-
-      // Maneja la respuesta de la API (opcional)
-      setApiResponse(response.data);
-      setApiError(null);
-    } catch (error) {
-      // Maneja los errores de la API (opcional)
-      setApiResponse(null);
-      setApiError(error.message || "Hubo un error al conectar con la API.");
-    }
-  };
-
   return (
     <Box m="20px">
-      <Header title="CREAR HISTORIAL" subtitle="Crear un nuevo Historial" />
+      <Header title="ACTUALIZAR HISTORIAL" subtitle="Actualizar Historial" />
 
       <Formik
-        onSubmit={handleSubmitApi} // Utiliza la función para enviar los datos a la API
+        onSubmit={handleUpdate} // Utiliza la función para enviar los datos a la API
         initialValues={initialValues}
         validationSchema={checkoutSchema}
       >
@@ -105,7 +145,7 @@ const Form = () => {
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Crear Nuevo Historial
+                Actualizar Historial
               </Button>
             </Box>
           </form>
@@ -133,12 +173,6 @@ const checkoutSchema = yup.object().shape({
   id_paciente_hist: yup.number().required("required"),
   estado_hist: yup.boolean().required("required"),
 });
-const initialValues = {
-  id_consulta_hist: 0,
-  id_paciente_hist: 0,
-  estado_hist:null,
 
 
-};
-
-export default Form;
+export default ActHistorial;
