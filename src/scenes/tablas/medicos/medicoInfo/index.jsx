@@ -4,7 +4,7 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../../../theme";
 //import { mockDataContacts } from "../../data/mockData";
 import BorderColorIcon from '@mui/icons-material/BorderColor';
-
+import { useNavigate} from 'react-router-dom';
 import Header from "../../../../components/Header";
 //import { useTheme } from "@mui/material";
 import axios from "axios"; // Importa la librería axios para realizar la solicitud HTTP
@@ -13,7 +13,9 @@ import axios from "axios"; // Importa la librería axios para realizar la solici
 const Contacts = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [rows, setRows] = useState([]); // Estado para almacenar los datos obtenidos desde la API
+  const [rows, setRows] = useState([]); 
+  const navigate = useNavigate(); 
+  // Estado para almacenar los datos obtenidos desde la API
   const color = {
     greenAccent: {
       100: "#e7f6e7",
@@ -29,7 +31,22 @@ const Contacts = () => {
     },
     // Add other colors if necessary
   };
-
+  const editar = (props) => {
+    const {
+      id_medi, 
+      nombre_medi,
+      apellidos_medi,
+      id_especialidad_medi,
+      hospital_medi,
+      direccion_medi,
+      correo_medi,
+      salario_medi,
+      supervisor_id_medi,
+      estado_medi,
+    }= props;
+  navigate(`/actMedico/${id_medi}/${nombre_medi}/${apellidos_medi}/${id_especialidad_medi}/${hospital_medi}/${direccion_medi}
+  /${correo_medi}/${salario_medi}/${supervisor_id_medi}/${estado_medi}`); 
+  }
   useEffect(() => {
     // Utiliza el hook useEffect para realizar la solicitud a la API al cargar el componente
     axios
@@ -149,6 +166,14 @@ const Contacts = () => {
               style={{ backgroundColor: buttonColor, width: "100%" }}
               sx={{ textAlign: "center" }}
               startIcon={<BorderColorIcon />}
+            />
+            <Button
+              onClick={() => editar(row)}
+              varian  t="variable"
+              style={{ backgroundColor: color.greenAccent[200], width: "30%" }}
+              sx={{ textAlign: "center" }}
+              startIcon={<BorderColorIcon />}
+              
             />
           </Box>
         );

@@ -1,20 +1,89 @@
-import { Box, Button, TextField, FormControl,InputLabel ,Select, MenuItem, FormHelperText, Typography   } from "@mui/material";
+import { Box, Button, TextField, FormControl, InputLabel, Select, MenuItem, FormHelperText, Typography } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../../../components/Header";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
-const Form = () => {
+const ActMedicina = () => {
+
+  const {
+    id_medi,
+    componentes_medi,
+    disponibilidad_medi,
+    cantidad_medi,
+    id_proveedor_medi,
+    id_receta_medi,
+    estado_medi,
+
+
+  } = useParams();
+  const [rows, setRows] = useState([]);
+
+  const initialValues = {
+    componentes_medi: componentes_medi,
+    disponibilidad_medi: disponibilidad_medi,
+    cantidad_medi: cantidad_medi,
+    id_proveedor_medi: id_proveedor_medi,
+    id_receta_medi: id_receta_medi,
+    estado_medi: estado_medi,
+  };
+
+
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   // State para manejar el estado de la respuesta de la API
   const [apiResponse, setApiResponse] = useState(null);
   const [apiError, setApiError] = useState(null);
-  const [proveedorOptions, setProveedorOptions] = useState([]);
-   // Función para enviar los datos del formulario a la API
-   const handleSubmitApi = async (values) => {
+  const handleUpdate = async (row) => {
+
+    // Invert the estado_pac value when the button is clicked
+
+    //const navigate = useNavigate();
+
+    // Prepare the data object to be sent in the PUT request
+    const updatedData = {
+
+      componentes_medi: row.componentes_medi,
+      disponibilidad_medi: row.disponibilidad_medi,
+      cantidad_medi: row.cantidad_medi,
+      id_proveedor_medi: row.id_proveedor_medi,
+      id_receta_medi: row.id_receta_medi,
+      estado_medi: row.estado_medi,
+
+    };
+
+    // Send the updated data to the API using the PUT method
+
+
+    try {
+
+      await axios.put(`http://localhost:9090/medicinas/${id_medi}`, updatedData);
+      const updatedRows = rows.map((r) => {
+        if (r.id === row.id) {
+          return { ...r, estado_medi: row.estado_medi };
+        }
+        return r;
+      });
+      setRows(updatedRows);
+      console.log("Estado Medicina actualizado en la API.");
+      alert("Se ha modificado los datos del Medicina");
+    }
+    catch (error) {
+      console.error("Error al obtener datos del Medicina:", error);
+      alert("No se pudieron modificar los datos de Medicina");
+    };
+    row.componentes_medi= "";
+    row.disponibilidad_medi= null; 
+    row.cantidad_medi= 0; 
+    row.id_proveedor_medi= 0;
+    row.id_receta_medi= 0;
+    row.estado_medi= null; 
+  };
+  // Función para enviar los datos del formulario a la API
+  const handleSubmitApi = async (values) => {
     try {
       // Realiza una solicitud POST a la API con los datos del formulario
       const response = await axios.post("http://localhost:9090/medicinas", values);
@@ -28,24 +97,13 @@ const Form = () => {
       setApiError(error.message || "Hubo un error al conectar con la API.");
     }
   };
-  useEffect(() => {
-    const fetchPatientOptions = async () => {
-      try {
-        const response = await axios.get("http://localhost:9090/proveedores");
-        const data = response.data;
-        setProveedorOptions(data);
-      } catch (error) {
-        console.error("Error fetching proveedores options:", error);
-      }
-    };
-    fetchPatientOptions();
-  }, []);
+
   return (
     <Box m="20px">
-      <Header title="CREAR MEDICINA" subtitle="Crear un nuevo Perfil de Medicina" />
+      <Header title="ACTUALIZAR MEDICINA" subtitle="Actualizar Perfil de Medicina" />
 
       <Formik
-        onSubmit={handleSubmitApi} // Utiliza la función para enviar los datos a la API
+        onSubmit={handleUpdate} // Utiliza la función para enviar los datos a la API
         initialValues={initialValues}
         validationSchema={checkoutSchema}
       >
@@ -80,7 +138,7 @@ const Form = () => {
                 sx={{ gridColumn: "span 2" }}
               />
               <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 2" }} error={!!touched.disponibilidad_medi && !!errors.disponibilidad_medi}>
-              <InputLabel htmlFor="estadp-select" sx={{ fontSize: 14 }}>Disponibilidad</InputLabel>
+                <InputLabel htmlFor="estadp-select" sx={{ fontSize: 14 }}>Disponibilidad</InputLabel>
                 <Select
                   value={values.disponibilidad_medi}
                   onChange={handleChange}
@@ -95,8 +153,8 @@ const Form = () => {
                   <MenuItem value="" disabled>
                     Disponibilidad
                   </MenuItem>
-                  <MenuItem value= "true" >Activo</MenuItem>
-                  <MenuItem value= "false">Inactivo</MenuItem>
+                  <MenuItem value="true" >Activo</MenuItem>
+                  <MenuItem value="false">Inactivo</MenuItem>
                 </Select>
                 {touched.disponibilidad_medi && errors.disponibilidad_medi && <FormHelperText>{errors.disponibilidad_medi}</FormHelperText>}
               </FormControl>
@@ -113,39 +171,19 @@ const Form = () => {
                 helperText={touched.cantidad_medi && errors.cantidad_medi}
                 sx={{ gridColumn: "span 2" }}
               />
-              <FormControl
+              <TextField
                 fullWidth
                 variant="filled"
-                sx={{ gridColumn: "span 2" }}
+                type="text"
+                label="ID Proveedor"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.id_proveedor_medi}
+                name="id_proveedor_medi"
                 error={!!touched.id_proveedor_medi && !!errors.id_proveedor_medi}
-              >
-                <InputLabel htmlFor="id_proveedor_medi-select" sx={{ fontSize: 14 }}>
-                  ID Proveedor
-                </InputLabel>
-                <Select
-                  value={values.id_proveedor_medi}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  name="id_proveedor_medi"
-                  displayEmpty
-                  inputProps={{
-                    name: 'id_proveedor_medi',
-                    id: 'id_proveedor_medi-select',
-                  }}
-                >
-                  <MenuItem value="" disabled>
-                    Seleccionar ID Paciente
-                  </MenuItem>
-                  {proveedorOptions.map((proveedor) => (
-                    <MenuItem key={proveedor.id_prov} value={proveedor.id_prov}>
-                      {proveedor.id_prov} - {proveedor.direccion_prov} 
-                    </MenuItem>
-                  ))}
-                </Select>
-                {touched.id_proveedor_medi && errors.id_proveedor_medi && (
-                  <FormHelperText>{errors.id_proveedor_medi}</FormHelperText>
-                )}
-              </FormControl>
+                helperText={touched.id_proveedor_medi && errors.id_proveedor_medi}
+                sx={{ gridColumn: "span 2" }}
+              />
               <TextField
                 fullWidth
                 variant="filled"
@@ -160,7 +198,7 @@ const Form = () => {
                 sx={{ gridColumn: "span 2" }}
               />
               <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 2" }} error={!!touched.estado_medi && !!errors.estado_medi}>
-              <InputLabel htmlFor="estadp-select" sx={{ fontSize: 14 }}>Estado</InputLabel>
+                <InputLabel htmlFor="estadp-select" sx={{ fontSize: 14 }}>Estado</InputLabel>
                 <Select
                   value={values.estado_medi}
                   onChange={handleChange}
@@ -175,15 +213,15 @@ const Form = () => {
                   <MenuItem value="" disabled>
                     Estado
                   </MenuItem>
-                  <MenuItem value= "true" >Activo</MenuItem>
-                  <MenuItem value= "false">Inactivo</MenuItem>
+                  <MenuItem value="true" >Activo</MenuItem>
+                  <MenuItem value="false">Inactivo</MenuItem>
                 </Select>
                 {touched.estado_medi && errors.estado_medi && <FormHelperText>{errors.estado_medi}</FormHelperText>}
               </FormControl>
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Crear Nueva Medicina
+                Actualizar Medicina
               </Button>
             </Box>
           </form>
@@ -215,12 +253,12 @@ const checkoutSchema = yup.object().shape({
   estado_medi: yup.boolean().required("required"),
 });
 const initialValues = {
-  componentes_medi:"",
+  componentes_medi: "",
   disponibilidad_medi: null,
-  cantidad_medi:0,
-  id_proveedor_medi:0,
+  cantidad_medi: 0,
+  id_proveedor_medi: 0,
   id_receta_medi: 0,
   estado_medi: null,
 };
 
-export default Form;
+export default ActMedicina;

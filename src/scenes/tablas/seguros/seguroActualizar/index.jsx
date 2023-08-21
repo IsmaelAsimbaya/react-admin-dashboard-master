@@ -5,14 +5,81 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../../../components/Header";
 import { useState } from "react";
 import axios from "axios";
+import { useParams } from "react-router-dom";
+const ActRecetaMedica = () => {
 
-const Form = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
-
-  // State para manejar el estado de la respuesta de la API
+  
   const [apiResponse, setApiResponse] = useState(null);
   const [apiError, setApiError] = useState(null);
+  const {
+    id_segmed,
+    nombre_segmed,
+    num_poliza_segmed,
+    compania_segmed,
+    fecha_segmed,
+    tipo_segmed,
+    porc_cobert_segmed,
+    id_paciente_segmed,
+    estado_segmed,
+  } = useParams(); 
+  const [rows, setRows] = useState([]);
+  const initialValues = {
 
+    nombre_segmed: nombre_segmed,
+    num_poliza_segmed: num_poliza_segmed,
+    compania_segmed: compania_segmed,
+    fecha_segmed: fecha_segmed,
+    tipo_segmed: tipo_segmed,
+    porc_cobert_segmed: porc_cobert_segmed,
+    id_paciente_segmed: id_paciente_segmed,
+    estado_segmed: estado_segmed,
+  };
+
+  const handleUpdate = async (row) => {
+    
+    const updatedData = {
+      
+      nombre_segmed: row.nombre_segmed,
+      num_poliza_segmed: row.num_poliza_segmed,
+      compania_segmed: row.compania_segmed,
+      fecha_segmed: row.fecha_segmed,
+      tipo_segmed: row.tipo_segmed,
+      porc_cobert_segmed: row.porc_cobert_segmed,
+      id_paciente_segmed: row.id_paciente_segmed,
+      estado_segmed: row.estado_segmed,
+     
+    };
+
+    // Send the updated data to the API using the PUT method
+
+   
+    try {
+
+      await axios.put(`http://localhost:9090/segurosmedicos/${id_segmed}`, updatedData);
+      const updatedRows = rows.map((r) => {
+        if (r.id === row.id) {
+          return { ...r, estado_segmed: row.estado_segmed };
+        }
+        return r;
+      });
+      setRows(updatedRows);
+      console.log("Estado Seguro medico actualizado en la API.");
+      alert("Se ha modificado los datos del Seguro medico");
+    }
+    catch (error) {
+      console.error("Error al obtener datos del Seguro medico:", error);
+      alert("No se pudieron modificar los datos de Seguro medico");
+    };
+    row.nombre_segmed = ""; 
+    row.num_poliza_segmed = "";
+    row.compania_segmed =""; 
+    row.fecha_segmed=""; 
+    row.tipo_segmed = "";
+    row.porc_cobert_segmed = 0;
+    row.id_paciente_segmed = 0; 
+    row.estado_segmed = null; 
+  };
    // Función para enviar los datos del formulario a la API
    const handleSubmitApi = async (values) => {
     try {
@@ -31,10 +98,10 @@ const Form = () => {
 
   return (
     <Box m="20px">
-      <Header title="CREAR SEGURO MEDICO" subtitle="Crear un nuevo Perfil de Seguro Medico" />
+      <Header title="ACTUALIZAR SEGURO MEDICO" subtitle="Actualizar Perfil de Seguro Medico" />
 
       <Formik
-        onSubmit={handleSubmitApi} // Utiliza la función para enviar los datos a la API
+        onSubmit={handleUpdate} // Utiliza la función para enviar los datos a la API
         initialValues={initialValues}
         validationSchema={checkoutSchema}
       >
@@ -170,7 +237,7 @@ const Form = () => {
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Crear Nueva Consulta Médica
+                Actualizar Consulta Médica
               </Button>
             </Box>
           </form>
@@ -214,4 +281,4 @@ const initialValues = {
   estado_segmed: null,
 };
 
-export default Form;
+export default ActRecetaMedica;

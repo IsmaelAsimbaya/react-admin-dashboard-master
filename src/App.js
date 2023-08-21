@@ -59,12 +59,12 @@ import ActHistorial from "./scenes/tablas/historiales/historialActualizar/index"
 import ActHospiralizacion from "./scenes/tablas/hospitalizaciones/hospitalacionActualizar/index"
 import ActIndumentaria from "./scenes/tablas/indumentarias/indumentariaActualizar/index"
 import ActLaboratorio from "./scenes/tablas/laboratorios/laboratorioActualizar/index"
-/*import ActMedicina from "./scenes/tablas/medicinas/medicinaActualizar/index"
+import ActMedicina from "./scenes/tablas/medicinas/medicinaActualizar/index"
 import ActMedico from "./scenes/tablas/medicos/medicoActualizar/index"
 import ActPersonal from "./scenes/tablas/personalT/personalActualizar/index"
 import ActProveedor from "./scenes/tablas/proveedores/proveedorActualizar/index"
 import ActReceta from "./scenes/tablas/recetas/recetaActualizar/index"
-import ActSeguro from "./scenes/tablas/seguros/seguroActualizar/index"*/
+import ActSeguro from "./scenes/tablas/seguros/seguroActualizar/index"
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -107,7 +107,13 @@ function App() {
               <Route path="/actHospitalizacion/:id_hosp/:fecha_inic_hosp/:fecha_fin_hosp/:personal_encarg_hosp/:descripcion_hosp/:estado_hosp" element={<ActHospiralizacion />} />
               <Route path="/actIndumentaria/:id_indu/:concepto_indu/:ubicacion_indu/:area_indu/:id_laboratorio_indu/:estado_indu" element={<ActIndumentaria />} />
               <Route path="/actLaboratorio/:id_labo/:nombre_pac_labo/:med_solicitante_labo/:fecha_labo/:tipo_prueba_labo/:observaciones_labo/:id_personal_labo/:estado_labo" element={<ActLaboratorio />} />
-              
+              <Route path="/actMedicina/:id_medi/:componentes_medi/:disponibilidad_medi/:cantidad_medi/:id_proveedor_medi/:id_receta_medi/:estado_medi" element={<ActMedicina />} />
+              <Route path="/actMedico/:id_medi/:nombre_medi/:apellidos_medi/:id_especialidad_medi/:hospital_medi/:direccion_medi/:correo_medi/:salario_medi/:supervisor_id_medi/:estado_medi" element={<ActMedico />} />
+              <Route path="/actPersonal/:id_pers/:id_departamento_pers/:encargado_pers/:horario_pers/:estado_pers" element={<ActPersonal />} />
+              <Route path="/actProveedores/:id_prov/:direccion_prov/:telefono_prov/:descuento_prov/:estado_prov" element={<ActProveedor />} />
+              <Route path="/actReceta/:id_rece/:duracionD_rece/:duracionM_rece/:duracionA_rece/:comentarios_rece/:motivos_rece/:via_administracion_rece/:id_consulta_rece/:estado_rece" element={<ActReceta />} />  
+              <Route path="/actSeguroMedico/:id_segmed/:nombre_segmed/:num_poliza_segmed/:compania_segmed/:fecha_segmed/:tipo_segmed/:porc_cobert_segmed/:id_paciente_segmed/:estado_segmed" element={<ActSeguro />} /> 
+
 
 
 

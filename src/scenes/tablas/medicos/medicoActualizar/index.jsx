@@ -5,8 +5,8 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../../../components/Header";
 import { useState } from "react";
 import axios from "axios";
-
-const Form = () => {
+import { useParams } from "react-router-dom";
+const ActMedico = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   // State para manejar el estado de la respuesta de la API
@@ -29,13 +29,87 @@ const Form = () => {
       setApiError(error.message || "Hubo un error al conectar con la API.");
     }
   };
+  const {
+    id_medi, 
+    nombre_medi,
+    apellidos_medi,
+    id_especialidad_medi,
+    hospital_medi,
+    direccion_medi,
+    correo_medi,
+    salario_medi,
+    supervisor_id_medi,
+    estado_medi
+  } = useParams(); 
+  const [rows, setRows] = useState([]);
+  const initialValues = {
+
+    nombre_medi: nombre_medi,
+    apellidos_medi: apellidos_medi,
+    id_especialidad_medi: id_especialidad_medi,
+    hospital_medi: hospital_medi,
+    direccion_medi: direccion_medi,
+    correo_medi: correo_medi,
+    salario_medi: salario_medi,
+    supervisor_id_medi: supervisor_id_medi,
+    estado_medi: estado_medi,
+
+  };
+
+  const handleUpdate = async (row) => {
+    
+    const updatedData = {
+      
+      nombre_medi: row.nombre_medi,
+      apellidos_medi: row.apellidos_medi,
+      id_especialidad_medi: row.id_especialidad_medi,
+      hospital_medi: row.hospital_medi,
+      direccion_medi: row.direccion_medi,
+      correo_medi: row.correo_medi,
+      salario_medi: row.salario_medi,
+      supervisor_id_medi: row.supervisor_id_medi,
+      estado_medi: row.estado_medi,
+
+     
+    };
+
+    // Send the updated data to the API using the PUT method
+
+   
+    try {
+
+      await axios.put(`http://localhost:9090/medicos/${id_medi}`, updatedData);
+      const updatedRows = rows.map((r) => {
+        if (r.id === row.id) {
+          return { ...r, estado_medi: row.estado_medi };
+        }
+        return r;
+      });
+      setRows(updatedRows);
+      console.log("Estado Médico actualizado en la API.");
+      alert("Se ha modificado los datos del Médico");
+    }
+    catch (error) {
+      console.error("Error al obtener datos del Médico:", error);
+      alert("No se pudieron modificar los datos de Médico");
+    };
+    row.nombre_medi= ""; 
+    row.apellidos_medi ="";
+    row.id_especialidad_medi= 0;
+    row.hospital_medi = "";
+    row.direccion_medi = ""; 
+    row.correo_medi = ""; 
+    row.salario_medi = 0;
+    row.supervisor_id_medi = 0; 
+    row.estado_medi = null; 
+  };
 
   return (
     <Box m="20px">
-      <Header title="CREAR MEDICO" subtitle="Crear un nuevo Perfil de Medico" />
+      <Header title="ACTUALIZAR MEDICO" subtitle="Actualizar Perfil de Medico" />
 
       <Formik
-        onSubmit={handleSubmitApi} // Utiliza la función para enviar los datos a la API
+        onSubmit={handleUpdate} // Utiliza la función para enviar los datos a la API
         initialValues={initialValues}
         validationSchema={checkoutSchema}
       >
@@ -184,7 +258,7 @@ const Form = () => {
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Crear Nuevo Medico
+                Actualizar Medico
               </Button>
             </Box>
           </form>
@@ -233,4 +307,4 @@ const initialValues = {
 
 };
 
-export default Form;
+export default ActMedico;

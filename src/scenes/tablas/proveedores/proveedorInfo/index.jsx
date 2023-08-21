@@ -4,7 +4,7 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../../../theme";
 //import { mockDataContacts } from "../../data/mockData";
 import BorderColorIcon from '@mui/icons-material/BorderColor';
-
+import { useNavigate} from 'react-router-dom';
 import Header from "../../../../components/Header";
 //import { useTheme } from "@mui/material";
 import axios from "axios"; // Importa la librería axios para realizar la solicitud HTTP
@@ -29,7 +29,17 @@ const Contacts = () => {
     },
     // Add other colors if necessary
   };
-
+  const navigate = useNavigate(); 
+  const editar = (props) => {
+    const {
+      id_prov, 
+      direccion_prov,
+      telefono_prov,
+      descuento_prov,
+      estado_prov, 
+    }= props;
+  navigate(`/actProveedores/${id_prov}/${direccion_prov}/${telefono_prov}/${descuento_prov}/${estado_prov}`); 
+  }
   useEffect(() => {
     // Utiliza el hook useEffect para realizar la solicitud a la API al cargar el componente
     axios
@@ -119,6 +129,14 @@ const Contacts = () => {
               style={{ backgroundColor: buttonColor, width: "100%" }}
               sx={{ textAlign: "center" }}
               startIcon={<BorderColorIcon />}
+            />
+            <Button
+              onClick={() => editar(row)}
+              varian  t="variable"
+              style={{ backgroundColor: color.greenAccent[200], width: "30%" }}
+              sx={{ textAlign: "center" }}
+              startIcon={<BorderColorIcon />}
+              
             />
           </Box>
         );

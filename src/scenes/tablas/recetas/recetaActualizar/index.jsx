@@ -5,36 +5,89 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../../../components/Header";
 import { useState } from "react";
 import axios from "axios";
-
-const Form = () => {
+import { useParams } from "react-router-dom";
+const ActReceta = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   // State para manejar el estado de la respuesta de la API
   const [apiResponse, setApiResponse] = useState(null);
   const [apiError, setApiError] = useState(null);
+  const {
+    id_rece, 
+    duracionD_rece,
+    duracionM_rece,
+    duracionA_rece,
+    comentarios_rece,
+    motivos_rece,
+    via_administracion_rece,
+    id_consulta_rece,
+    estado_rece,
+  } = useParams(); 
+  
+  const [rows, setRows] = useState([]);
+  const initialValues = {
 
-   // Función para enviar los datos del formulario a la API
-   const handleSubmitApi = async (values) => {
-    try {
-      // Realiza una solicitud POST a la API con los datos del formulario
-      const response = await axios.post("http://localhost:9090/recetas", values);
-
-      // Maneja la respuesta de la API (opcional)
-      setApiResponse(response.data);
-      setApiError(null);
-    } catch (error) {
-      // Maneja los errores de la API (opcional)
-      setApiResponse(null);
-      setApiError(error.message || "Hubo un error al conectar con la API.");
-    }
+    duracionD_rece: duracionD_rece,
+    duracionM_rece: duracionM_rece,
+    duracionA_rece: duracionA_rece,
+    comentarios_rece: comentarios_rece,
+    motivos_rece: motivos_rece,
+    via_administracion_rece: via_administracion_rece,
+    id_consulta_rece: id_consulta_rece,
+    estado_rece: estado_rece,
   };
+  const handleUpdate = async (row) => {
+    
+    const updatedData = {
+      
+      duracionD_rece: row.duracionD_rece,
+      duracionM_rece: row.duracionM_rece,
+      duracionA_rece: row.duracionA_rece,
+      comentarios_rece: row.comentarios_rece,
+      motivos_rece: row.motivos_rece,
+      via_administracion_rece: row.via_administracion_rece,
+      id_consulta_rece: row.id_consulta_rece,
+      estado_rece: row.estado_rece,
+     
+    };
+
+    // Send the updated data to the API using the PUT method
+
+   
+    try {
+
+      await axios.put(`http://localhost:9090/recetas/${id_rece}`, updatedData);
+      const updatedRows = rows.map((r) => {
+        if (r.id === row.id) {
+          return { ...r, estado_rece: row.estado_rece };
+        }
+        return r;
+      });
+      setRows(updatedRows);
+      console.log("Estado Receta actualizado en la API.");
+      alert("Se ha modificado los datos del Receta");
+    }
+    catch (error) {
+      console.error("Error al obtener datos del Receta:", error);
+      alert("No se pudieron modificar los datos de Receta");
+    };
+    row.uracionD_rece = 0;
+    row.duracionM_rece = 0; 
+    row.duracionA_rece = 0; 
+    row.comentarios_rece = "";
+    row.motivos_rece = ""; 
+    row.via_administracion_rece = ""; 
+    row.id_consulta_rece = 0;
+    row.estado_rece = null; 
+  };
+
 
   return (
     <Box m="20px">
-      <Header title="CREAR RECETA" subtitle="Crear un nueva Receta" />
+      <Header title="ACTUALIZAR RECETA" subtitle="Actualizar Receta" />
 
       <Formik
-        onSubmit={handleSubmitApi} // Utiliza la función para enviar los datos a la API
+        onSubmit={handleUpdate} // Utiliza la función para enviar los datos a la API
         initialValues={initialValues}
         validationSchema={checkoutSchema}
       >
@@ -170,7 +223,7 @@ const Form = () => {
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Crear Nueva Receta
+                Actualizar Receta
               </Button>
             </Box>
           </form>
@@ -203,15 +256,5 @@ const checkoutSchema = yup.object().shape({
   id_consulta_rece: yup.number().required("required"),
   estado_rece: yup.boolean().required("required"),
 });
-const initialValues = {
-  duracionD_rece: 0,
-  duracionM_rece: 0,
-  duracionA_rece: 0,
-  comentarios_rece:"",
-  motivos_rece: "",
-  via_administracion_rece: "",
-  id_consulta_rece: 0,
-  estado_rece: null,
-};
 
-export default Form;
+export default ActReceta;

@@ -1,4 +1,4 @@
-import { Box, Button, TextField, FormControl, Select, MenuItem, FormHelperText, Typography   } from "@mui/material";
+import { Box, Button, TextField, FormControl, Select,InputLabel ,MenuItem, FormHelperText, Typography   } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -95,6 +95,7 @@ const Form = () => {
                 sx={{ gridColumn: "span 2" }}
               />
               <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 2" }} error={!!touched.estado_pers && !!errors.estado_pers}>
+              <InputLabel htmlFor="estadp-select" sx={{ fontSize: 14 }}>Estado</InputLabel>
                 <Select
                   value={values.estado_pers}
                   onChange={handleChange}

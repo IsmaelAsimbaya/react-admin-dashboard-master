@@ -8,10 +8,11 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
 import Header from "../../../../components/Header";
 //import { useTheme } from "@mui/material";
 import axios from "axios"; // Importa la librería axios para realizar la solicitud HTTP
-
+import { useNavigate} from 'react-router-dom';
 
 const Contacts = () => {
   const theme = useTheme();
+  const navigate = useNavigate(); 
   const colors = tokens(theme.palette.mode);
   const [rows, setRows] = useState([]); // Estado para almacenar los datos obtenidos desde la API
   const color = {
@@ -29,7 +30,21 @@ const Contacts = () => {
     },
     // Add other colors if necessary
   };
-
+  const editar = (props) => {
+    const {
+      id_rece, 
+      duracionD_rece,
+      duracionM_rece,
+      duracionA_rece,
+      comentarios_rece,
+      motivos_rece,
+      via_administracion_rece,
+      id_consulta_rece,
+      estado_rece,
+    }= props;
+  navigate(`/actReceta/${id_rece}/${duracionD_rece}/${duracionM_rece}/${duracionA_rece}/${comentarios_rece}
+  /${motivos_rece}/${via_administracion_rece}/${id_consulta_rece}/${estado_rece}`); 
+  }
   useEffect(() => {
     // Utiliza el hook useEffect para realizar la solicitud a la API al cargar el componente
     axios
@@ -143,6 +158,14 @@ const Contacts = () => {
               style={{ backgroundColor: buttonColor, width: "100%" }}
               sx={{ textAlign: "center" }}
               startIcon={<BorderColorIcon />}
+            />
+            <Button
+              onClick={() => editar(row)}
+              varian  t="variable"
+              style={{ backgroundColor: color.greenAccent[200], width: "30%" }}
+              sx={{ textAlign: "center" }}
+              startIcon={<BorderColorIcon />}
+              
             />
           </Box>
         );
