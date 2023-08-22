@@ -1,9 +1,9 @@
-import { Box, Button, TextField, FormControl, InputLabel, Select, MenuItem, FormHelperText, Typography   } from "@mui/material";
+import { Box, Button, TextField, FormControl, InputLabel, Select, MenuItem, FormHelperText, Typography } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../../../components/Header";
-import { useState , useEffect} from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 const Form = () => {
@@ -14,8 +14,8 @@ const Form = () => {
   const [apiError, setApiError] = useState(null);
   const [patientOptions, setPatientOptions] = useState([]);
   const [medicoOptions, setMedicosOptions] = useState([]);
-   // Función para enviar los datos del formulario a la API
-   const handleSubmitApi = async (values) => {
+  // Función para enviar los datos del formulario a la API
+  const handleSubmitApi = async (values) => {
     try {
       // Realiza una solicitud POST a la API con los datos del formulario
       const response = await axios.post("http://localhost:9090/derivaciones", values);
@@ -78,7 +78,7 @@ const Form = () => {
                 "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
               }}
             >
-               <FormControl
+              <FormControl
                 fullWidth
                 variant="filled"
                 sx={{ gridColumn: "span 2" }}
@@ -136,7 +136,7 @@ const Form = () => {
                   </MenuItem>
                   {medicoOptions.map((medico) => (
                     <MenuItem key={medico.id_medi} value={medico.id_medi}>
-                      {medico.id_medi} - {medico.nombre_medi} 
+                      {medico.id_medi} - {medico.nombre_medi}
                     </MenuItem>
                   ))}
                 </Select>
@@ -158,7 +158,7 @@ const Form = () => {
                 sx={{ gridColumn: "span 2" }}
               />
               <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 2" }} error={!!touched.estado_deri && !!errors.estado_deri}>
-              <InputLabel htmlFor="sexo_pac-select" sx={{ fontSize: 14 }}>Estado</InputLabel>
+                <InputLabel htmlFor="sexo_pac-select" sx={{ fontSize: 14 }}>Estado</InputLabel>
                 <Select
                   value={values.estado_deri}
                   onChange={handleChange}
@@ -173,8 +173,8 @@ const Form = () => {
                   <MenuItem value="" disabled>
                     Estado
                   </MenuItem>
-                  <MenuItem value= "true" >Activo</MenuItem>
-                  <MenuItem value= "false">Inactivo</MenuItem>
+                  <MenuItem value="true" >Activo</MenuItem>
+                  <MenuItem value="false">Inactivo</MenuItem>
                 </Select>
                 {touched.estado_deri && errors.estado_deri && <FormHelperText>{errors.estado_deri}</FormHelperText>}
               </FormControl>
@@ -225,10 +225,10 @@ const checkoutSchema = yup.object().shape({
   estado_deri: yup.boolean().required("required"),
 });
 const initialValues = {
-  id_usuario_deri:"",
+  id_usuario_deri: "",
   descripcion_deri: "",
-  fecha_deri:"",
-  id_med_deri:0,
+  fecha_deri: "",
+  id_med_deri: 0,
   estado_deri: null,
 
 

@@ -206,7 +206,7 @@ const Form = () => {
                   </MenuItem>
                   {personalOptions.map((personal) => (
                     <MenuItem key={personal.id_pers} value={personal.id_pers}>
-                      {personal.id_pers} - {personal.encargado_pers}
+                      {personal.id_pers} - Personal ID: {personal.encargado_pers}
                     </MenuItem>
                   ))}
                 </Select>

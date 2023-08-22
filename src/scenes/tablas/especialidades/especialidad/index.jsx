@@ -89,7 +89,7 @@ const Form = () => {
                   Departamento
                 </InputLabel>
                 <Select
-                  value={values.id_medico_cons}
+                  value={values.id_departamento_espe}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   name="id_departamento_espe"

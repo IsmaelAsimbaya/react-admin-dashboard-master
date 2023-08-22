@@ -3,7 +3,7 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../../../components/Header";
-import { useState } from "react";
+import { useState , useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 const ActPersonal = () => {
@@ -12,22 +12,8 @@ const ActPersonal = () => {
   // State para manejar el estado de la respuesta de la API
   const [apiResponse, setApiResponse] = useState(null);
   const [apiError, setApiError] = useState(null);
-
+  const [departamentoOptions, setDepartamentoOptions] = useState([]);
    // Función para enviar los datos del formulario a la API
-   const handleSubmitApi = async (values) => {
-    try {
-      // Realiza una solicitud POST a la API con los datos del formulario
-      const response = await axios.post("http://localhost:9090/personal", values);
-
-      // Maneja la respuesta de la API (opcional)
-      setApiResponse(response.data);
-      setApiError(null);
-    } catch (error) {
-      // Maneja los errores de la API (opcional)
-      setApiResponse(null);
-      setApiError(error.message || "Hubo un error al conectar con la API.");
-    }
-  };
   const {
     id_pers, 
     id_departamento_pers,
@@ -36,7 +22,19 @@ const ActPersonal = () => {
     estado_pers,
   } = useParams(); 
   const [rows, setRows] = useState([]);
+  useEffect(() => {
+    const fetchDepartamentoOptions = async () => {
+      try {
+        const response = await axios.get("http://localhost:9090/departamentos");
+        const data = response.data;
+        setDepartamentoOptions(data);
+      } catch (error) {
+        console.error("Error fetching departamento options:", error);
+      }
+    };
 
+    fetchDepartamentoOptions();
+  }, []);
   const initialValues = {
     id_departamento_pers: id_departamento_pers,
     encargado_pers: encargado_pers,
@@ -108,19 +106,39 @@ const ActPersonal = () => {
                 "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
               }}
             >
-              <TextField
+              <FormControl
                 fullWidth
                 variant="filled"
-                type="text"
-                label="ID Departamento"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.id_departamento_pers}
-                name="id_departamento_pers"
-                error={!!touched.id_departamento_pers && !!errors.id_departamento_pers}
-                helperText={touched.id_departamento_pers && errors.id_departamento_pers}
                 sx={{ gridColumn: "span 2" }}
-              />
+                error={!!touched.id_departamento_pers && !!errors.id_departamento_pers}
+              >
+                <InputLabel htmlFor="id_departamento_pers-select" sx={{ fontSize: 14 }}>
+                  Departamento
+                </InputLabel>
+                <Select
+                  value={values.id_departamento_pers}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  name="id_departamento_pers"
+                  displayEmpty
+                  inputProps={{
+                    name: 'id_departamento_pers',
+                    id: 'id_departamento_pers-select',
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Seleccionar el departamento
+                  </MenuItem>
+                  {departamentoOptions.map((departamento) => (
+                    <MenuItem key={departamento.id_depa} value={departamento.id_depa}>
+                      {departamento.id_depa} - {departamento.oficina_depa} - Encar: {departamento.encargado_id_dep}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {touched.id_departamento_pers && errors.id_departamento_pers && (
+                  <FormHelperText>{errors.id_departamento_pers}</FormHelperText>
+                )}
+              </FormControl>
               <TextField
                 fullWidth
                 variant="filled"

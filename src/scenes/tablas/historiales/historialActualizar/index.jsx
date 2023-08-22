@@ -1,9 +1,9 @@
-import { Box, Button, TextField, FormControl, Select, MenuItem, FormHelperText, Typography , InputLabel   } from "@mui/material";
+import { Box, Button, TextField, FormControl, Select, MenuItem, FormHelperText, Typography, InputLabel } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../../../components/Header";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
@@ -16,6 +16,8 @@ const ActHistorial = () => {
     estado_hist,
   } = useParams();
   const [rows, setRows] = useState([]);
+  const [patientOptions, setPatientOptions] = useState([]);
+  const [consultaOptions, setConsultaOptions] = useState([]);
   const initialValues = {
 
     id_consulta_hist: id_consulta_hist,
@@ -23,11 +25,32 @@ const ActHistorial = () => {
     estado_hist: estado_hist,
 
   };
-
+  useEffect(() => {
+    const fetchPatientOptions = async () => {
+      try {
+        const response = await axios.get("http://localhost:9090/pacientes");
+        const data = response.data;
+        setPatientOptions(data);
+      } catch (error) {
+        console.error("Error fetching patient options:", error);
+      }
+    };
+    const fetchConsultaOptions = async () => {
+      try {
+        const response = await axios.get("http://localhost:9090/consultas");
+        const data = response.data;
+        setConsultaOptions(data);
+      } catch (error) {
+        console.error("Error fetching medicos options:", error);
+      }
+    };
+    fetchConsultaOptions();
+    fetchPatientOptions();
+  }, []);
   const handleUpdate = async (row) => {
-    
+
     // Invert the estado_pac value when the button is clicked
-    
+
     //const navigate = useNavigate();
 
     // Prepare the data object to be sent in the PUT request
@@ -37,14 +60,15 @@ const ActHistorial = () => {
       estado_hist: row.estado_hist,
     };
 
-   // console.log("Consulta", id_consulta_hist);
+    // console.log("Consulta", id_consulta_hist);
     // console.log("Paciente", id_paciente_hist);
 
-   
+
     try {
-      console.log(updatedData); 
+      console.log("Consulta", updatedData.id_consulta_hist);
+      console.log("Paciente", updatedData.id_paciente_hist);
       await axios.put(`http://localhost:9090/historial/${id_hist}`, updatedData);
-      
+
       const updatedRows = rows.map((r) => {
         if (r.id === row.id) {
           return { ...r, estado_hist: row.estado_hist };
@@ -59,9 +83,9 @@ const ActHistorial = () => {
       console.error("Error al obtener datos del Historial:", error);
       alert("No se pudieron modificar los datos de Historial");
     };
-    row.id_consulta_hist = 0; 
-    row.id_paciente_hist = 0; 
-    row.estado_hist = null; 
+    row.id_consulta_hist = 0;
+    row.id_paciente_hist = 0;
+    row.estado_hist = null;
   };
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
@@ -95,34 +119,74 @@ const ActHistorial = () => {
                 "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
               }}
             >
-              <TextField
+              <FormControl
                 fullWidth
                 variant="filled"
-                type="text"
-                label="ID Consulta"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.id_consulta_hist}
-                name="id_consulta_hist"
+                sx={{ gridColumn: "span 2" }}
                 error={!!touched.id_consulta_hist && !!errors.id_consulta_hist}
-                helperText={touched.id_consulta_hist && errors.id_consulta_hist}
-                sx={{ gridColumn: "span 2" }}
-              />
-              <TextField
+              >
+                <InputLabel htmlFor="id_consulta_hist-select" sx={{ fontSize: 14 }}>
+                  Consulta
+                </InputLabel>
+                <Select
+                  value={values.id_consulta_hist}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  name="id_consulta_hist"
+                  displayEmpty
+                  inputProps={{
+                    name: 'id_consulta_hist',
+                    id: 'id_consulta_hist-select',
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Seleccionar la Consulta
+                  </MenuItem>
+                  {consultaOptions.map((consulta) => (
+                    <MenuItem key={consulta.id_cons} value={consulta.id_cons}>
+                      {consulta.id_cons} - Id. Pac: {consulta.id_paciente_cons} - {consulta.concepto_cons}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {touched.id_consulta_hist && errors.id_consulta_hist && (
+                  <FormHelperText>{errors.id_consulta_hist}</FormHelperText>
+                )}
+              </FormControl>
+              <FormControl
                 fullWidth
                 variant="filled"
-                type="text"
-                label="ID Paciente"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.id_paciente_hist}
-                name="id_paciente_hist"
-                error={!!touched.id_paciente_hist && !!errors.id_paciente_hist}
-                helperText={touched.id_paciente_hist && errors.id_paciente_hist}
                 sx={{ gridColumn: "span 2" }}
-              />
+                error={!!touched.id_paciente_hist && !!errors.id_paciente_hist}
+              >
+                <InputLabel htmlFor="id_paciente_hist-select" sx={{ fontSize: 14 }}>
+                  Paciente
+                </InputLabel>
+                <Select
+                  value={values.id_paciente_hist}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  name="id_paciente_hist"
+                  displayEmpty
+                  inputProps={{
+                    name: 'id_paciente_hist',
+                    id: 'id_paciente_hist-select',
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Seleccionar el Paciente
+                  </MenuItem>
+                  {patientOptions.map((patient) => (
+                    <MenuItem key={patient.id_pac} value={patient.id_pac}>
+                      {patient.id_pac} - {patient.nombre_pac} {patient.apellido_paterno_pac}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {touched.id_paciente_hist && errors.id_paciente_hist && (
+                  <FormHelperText>{errors.id_paciente_hist}</FormHelperText>
+                )}
+              </FormControl>
               <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 2" }} error={!!touched.estado_hist && !!errors.estado_hist}>
-              <InputLabel htmlFor="estadp-select" sx={{ fontSize: 14 }}>Estado</InputLabel>
+                <InputLabel htmlFor="estadp-select" sx={{ fontSize: 14 }}>Estado</InputLabel>
                 <Select
                   value={values.estado_hist}
                   onChange={handleChange}
@@ -137,8 +201,8 @@ const ActHistorial = () => {
                   <MenuItem value="" disabled>
                     Estado
                   </MenuItem>
-                  <MenuItem value= "true" >Activo</MenuItem>
-                  <MenuItem value= "false">Inactivo</MenuItem>
+                  <MenuItem value="true" >Activo</MenuItem>
+                  <MenuItem value="false">Inactivo</MenuItem>
                 </Select>
                 {touched.estado_hist && errors.estado_hist && <FormHelperText>{errors.estado_hist}</FormHelperText>}
               </FormControl>

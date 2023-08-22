@@ -8,13 +8,9 @@ import axios from "axios";
 
 const Form = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
-
-  // State para manejar el estado de la respuesta de la API
   const [apiResponse, setApiResponse] = useState(null);
   const [apiError, setApiError] = useState(null);
   const [patientOptions, setPatientOptions] = useState([]);
-
-
   // Función para enviar los datos del formulario a la API
   const handleSubmitApi = async (values) => {
     try {
@@ -203,7 +199,7 @@ const Form = () => {
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Crear Nueva Consulta Médica
+                Crear Nuevo Seguro Médico 
               </Button>
             </Box>
           </form>

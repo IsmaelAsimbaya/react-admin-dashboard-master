@@ -3,7 +3,7 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../../../components/Header";
-import { useState } from "react";
+import { useState , useEffect} from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
@@ -17,6 +17,8 @@ const ActDerivacion = () => {
     estado_deri,
   } = useParams(); 
   const [rows, setRows] = useState([]);
+  const [patientOptions, setPatientOptions] = useState([]);
+  const [medicoOptions, setMedicosOptions] = useState([]);
   const initialValues = {
 
     id_usuario_deri: id_usuario_deri,
@@ -27,6 +29,28 @@ const ActDerivacion = () => {
 
 
   };
+  useEffect(() => {
+    const fetchPatientOptions = async () => {
+      try {
+        const response = await axios.get("http://localhost:9090/pacientes");
+        const data = response.data;
+        setPatientOptions(data);
+      } catch (error) {
+        console.error("Error fetching patient options:", error);
+      }
+    };
+    const fetchMedicosOptions = async () => {
+      try {
+        const response = await axios.get("http://localhost:9090/medicos");
+        const data = response.data;
+        setMedicosOptions(data);
+      } catch (error) {
+        console.error("Error fetching medicos options:", error);
+      }
+    };
+    fetchMedicosOptions();
+    fetchPatientOptions();
+  }, []);
   const handleUpdate = async (row) => {
     
     // Invert the estado_pac value when the button is clicked
@@ -118,32 +142,72 @@ const ActDerivacion = () => {
                 "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
               }}
             >
-              <TextField
+              <FormControl
                 fullWidth
                 variant="filled"
-                type="text"
-                label="ID Usuario"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.id_usuario_deri}
-                name="id_usuario_deri"
+                sx={{ gridColumn: "span 2" }}
                 error={!!touched.id_usuario_deri && !!errors.id_usuario_deri}
-                helperText={touched.id_usuario_deri && errors.id_usuario_deri}
-                sx={{ gridColumn: "span 2" }}
-              />
-              <TextField
+              >
+                <InputLabel htmlFor="id_usuario_deri-select" sx={{ fontSize: 14 }}>
+                  ID Paciente
+                </InputLabel>
+                <Select
+                  value={values.id_usuario_deri}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  name="id_usuario_deri"
+                  displayEmpty
+                  inputProps={{
+                    name: 'id_usuario_deri',
+                    id: 'id_usuario_deri-select',
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Seleccionar ID Paciente
+                  </MenuItem>
+                  {patientOptions.map((patient) => (
+                    <MenuItem key={patient.id_pac} value={patient.id_pac}>
+                      {patient.id_pac} - {patient.nombre_pac} {patient.apellido_paterno_pac}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {touched.id_usuario_deri && errors.id_usuario_deri && (
+                  <FormHelperText>{errors.id_usuario_deri}</FormHelperText>
+                )}
+              </FormControl>
+              <FormControl
                 fullWidth
                 variant="filled"
-                type="text"
-                label="ID Medico"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.id_med_deri}
-                name="id_med_deri"
-                error={!!touched.id_med_deri && !!errors.id_med_deri}
-                helperText={touched.id_med_deri && errors.id_med_deri}
                 sx={{ gridColumn: "span 2" }}
-              />
+                error={!!touched.id_med_deri && !!errors.id_med_deri}
+              >
+                <InputLabel htmlFor="id_med_deri-select" sx={{ fontSize: 14 }}>
+                  ID Médico
+                </InputLabel>
+                <Select
+                  value={values.id_med_deri}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  name="id_med_deri"
+                  displayEmpty
+                  inputProps={{
+                    name: 'id_med_deri',
+                    id: 'id_med_deri-select',
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Seleccionar ID Médico
+                  </MenuItem>
+                  {medicoOptions.map((medico) => (
+                    <MenuItem key={medico.id_medi} value={medico.id_medi}>
+                      {medico.id_medi} - {medico.nombre_medi}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {touched.id_med_deri && errors.id_med_deri && (
+                  <FormHelperText>{errors.id_paid_medico_consciente_cons}</FormHelperText>
+                )}
+              </FormControl>
               <TextField
                 fullWidth
                 variant="filled"

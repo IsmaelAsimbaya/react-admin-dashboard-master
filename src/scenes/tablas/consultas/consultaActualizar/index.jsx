@@ -3,7 +3,7 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../../../components/Header";
-import { useState } from "react";
+import { useState , useEffect} from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
@@ -18,7 +18,8 @@ const ActConsulta = () => {
     estado_cons,
   } = useParams();
   const [rows, setRows] = useState([]);
-  
+  const [patientOptions, setPatientOptions] = useState([]);
+  const [medicoOptions, setMedicosOptions] = useState([]);
   const initialValues = {
 
     concepto_cons: concepto_cons,
@@ -28,6 +29,28 @@ const ActConsulta = () => {
     estado_cons: estado_cons,
 
   };
+  useEffect(() => {
+    const fetchPatientOptions = async () => {
+      try {
+        const response = await axios.get("http://localhost:9090/pacientes");
+        const data = response.data;
+        setPatientOptions(data);
+      } catch (error) {
+        console.error("Error fetching patient options:", error);
+      }
+    };
+    const fetchMedicosOptions = async () => {
+      try {
+        const response = await axios.get("http://localhost:9090/medicos");
+        const data = response.data;
+        setMedicosOptions(data);
+      } catch (error) {
+        console.error("Error fetching medicos options:", error);
+      }
+    };
+    fetchMedicosOptions();
+    fetchPatientOptions();
+  }, []);
   const handleUpdate = async (row) => {
     
     // Invert the estado_pac value when the button is clicked
@@ -94,7 +117,7 @@ const ActConsulta = () => {
 
   return (
     <Box m="20px">
-      <Header title="CREAR CONSULTA" subtitle="Crear una nueva Consulta" />
+      <Header title="ACTUALIZAR CONSULTA" subtitle="Actualizar una consulta" />
 
       <Formik
         onSubmit={handleUpdate} // Utiliza la función para enviar los datos a la API
@@ -131,32 +154,72 @@ const ActConsulta = () => {
                 helperText={touched.concepto_cons && errors.concepto_cons}
                 sx={{ gridColumn: "span 4" }}
               />
-              <TextField
+               <FormControl
                 fullWidth
                 variant="filled"
-                type="text"
-                label="ID Paciente"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.id_paciente_cons}
-                name="id_paciente_cons"
+                sx={{ gridColumn: "span 2" }}
                 error={!!touched.id_paciente_cons && !!errors.id_paciente_cons}
-                helperText={touched.id_paciente_cons && errors.id_paciente_cons}
-                sx={{ gridColumn: "span 2" }}
-              />
-              <TextField
+              >
+                <InputLabel htmlFor="id_paciente_cons-select" sx={{ fontSize: 14 }}>
+                  ID Paciente
+                </InputLabel>
+                <Select
+                  value={values.id_paciente_cons}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  name="id_paciente_cons"
+                  displayEmpty
+                  inputProps={{
+                    name: 'id_paciente_cons',
+                    id: 'id_paciente_cons-select',
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Seleccionar ID Paciente
+                  </MenuItem>
+                  {patientOptions.map((patient) => (
+                    <MenuItem key={patient.id_pac} value={patient.id_pac}>
+                      {patient.id_pac} - {patient.nombre_pac} {patient.apellido_paterno_pac}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {touched.id_paciente_cons && errors.id_paciente_cons && (
+                  <FormHelperText>{errors.id_paciente_cons}</FormHelperText>
+                )}
+              </FormControl>
+              <FormControl
                 fullWidth
                 variant="filled"
-                type="text"
-                label="ID Medico"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.id_medico_cons}
-                name="id_medico_cons"
-                error={!!touched.id_medico_cons && !!errors.id_medico_cons}
-                helperText={touched.id_medico_cons && errors.id_medico_cons}
                 sx={{ gridColumn: "span 2" }}
-              />
+                error={!!touched.id_medico_cons && !!errors.id_medico_cons}
+              >
+                <InputLabel htmlFor="id_medico_cons-select" sx={{ fontSize: 14 }}>
+                  ID Médico
+                </InputLabel>
+                <Select
+                  value={values.id_medico_cons}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  name="id_medico_cons"
+                  displayEmpty
+                  inputProps={{
+                    name: 'id_medico_cons',
+                    id: 'id_medico_cons-select',
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Seleccionar ID Médico
+                  </MenuItem>
+                  {medicoOptions.map((medico) => (
+                    <MenuItem key={medico.id_medi} value={medico.id_medi}>
+                      {medico.id_medi} - {medico.nombre_medi} 
+                    </MenuItem>
+                  ))}
+                </Select>
+                {touched.id_medico_cons && errors.id_medico_cons && (
+                  <FormHelperText>{errors.id_paid_medico_consciente_cons}</FormHelperText>
+                )}
+              </FormControl>
               <TextField
                 fullWidth
                 variant="filled"

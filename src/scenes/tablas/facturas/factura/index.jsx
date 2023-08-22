@@ -168,7 +168,7 @@ const Form = () => {
                   Receta
                 </InputLabel>
                 <Select
-                  value={values.id_paciente_cons}
+                  value={values.id_receta_fact}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   name="id_receta_fact"
@@ -228,7 +228,7 @@ const Form = () => {
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Crear Nuevo Paciente
+                Crear Nueva Factura 
               </Button>
             </Box>
           </form>

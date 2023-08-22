@@ -3,7 +3,7 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../../../components/Header";
-import { useState } from "react";
+import { useState , useEffect} from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
@@ -21,7 +21,8 @@ const ActMedicina = () => {
 
   } = useParams();
   const [rows, setRows] = useState([]);
-
+  const [proveedorOptions, setProveedorOptions] = useState([]);
+  const [recetaOptions, setRecetaOptions] = useState([]);
   const initialValues = {
     componentes_medi: componentes_medi,
     disponibilidad_medi: disponibilidad_medi,
@@ -30,7 +31,28 @@ const ActMedicina = () => {
     id_receta_medi: id_receta_medi,
     estado_medi: estado_medi,
   };
-
+  useEffect(() => {
+    const fetchPatientOptions = async () => {
+      try {
+        const response = await axios.get("http://localhost:9090/proveedores");
+        const data = response.data;
+        setProveedorOptions(data);
+      } catch (error) {
+        console.error("Error fetching proveedores options:", error);
+      }
+    };
+    const fetchRecetaOptions = async () => {
+      try {
+        const response = await axios.get("http://localhost:9090/recetas");
+        const data = response.data;
+        setRecetaOptions(data);
+      } catch (error) {
+        console.error("Error fetching recetas options:", error);
+      }
+    };
+    fetchPatientOptions();
+    fetchRecetaOptions(); 
+  }, []);
 
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
@@ -171,32 +193,72 @@ const ActMedicina = () => {
                 helperText={touched.cantidad_medi && errors.cantidad_medi}
                 sx={{ gridColumn: "span 2" }}
               />
-              <TextField
+              <FormControl
                 fullWidth
                 variant="filled"
-                type="text"
-                label="ID Proveedor"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.id_proveedor_medi}
-                name="id_proveedor_medi"
+                sx={{ gridColumn: "span 2" }}
                 error={!!touched.id_proveedor_medi && !!errors.id_proveedor_medi}
-                helperText={touched.id_proveedor_medi && errors.id_proveedor_medi}
-                sx={{ gridColumn: "span 2" }}
-              />
-              <TextField
+              >
+                <InputLabel htmlFor="id_proveedor_medi-select" sx={{ fontSize: 14 }}>
+                  ID Proveedor
+                </InputLabel>
+                <Select
+                  value={values.id_proveedor_medi}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  name="id_proveedor_medi"
+                  displayEmpty
+                  inputProps={{
+                    name: 'id_proveedor_medi',
+                    id: 'id_proveedor_medi-select',
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Seleccionar ID Paciente
+                  </MenuItem>
+                  {proveedorOptions.map((proveedor) => (
+                    <MenuItem key={proveedor.id_prov} value={proveedor.id_prov}>
+                      {proveedor.id_prov} - {proveedor.direccion_prov} 
+                    </MenuItem>
+                  ))}
+                </Select>
+                {touched.id_proveedor_medi && errors.id_proveedor_medi && (
+                  <FormHelperText>{errors.id_proveedor_medi}</FormHelperText>
+                )}
+              </FormControl>
+              <FormControl
                 fullWidth
                 variant="filled"
-                type="text"
-                label="ID Receta"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.id_receta_medi}
-                name="id_receta_medi"
-                error={!!touched.id_receta_medi && !!errors.id_receta_medi}
-                helperText={touched.id_receta_medi && errors.id_receta_medi}
                 sx={{ gridColumn: "span 2" }}
-              />
+                error={!!touched.id_receta_medi && !!errors.id_receta_medi}
+              >
+                <InputLabel htmlFor="id_receta_medi-select" sx={{ fontSize: 14 }}>
+                  Receta
+                </InputLabel>
+                <Select
+                  value={values.id_receta_medi}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  name="id_receta_medi"
+                  displayEmpty
+                  inputProps={{
+                    name: 'id_receta_medi',
+                    id: 'id_receta_medi-select',
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Seleccionar la receta
+                  </MenuItem>
+                  {recetaOptions.map((receta) => (
+                    <MenuItem key={receta.id_rece} value={receta.id_rece}>
+                      {receta.id_rece} - {receta.comentarios_rece} 
+                    </MenuItem>
+                  ))}
+                </Select>
+                {touched.id_receta_medi && errors.id_receta_medi && (
+                  <FormHelperText>{errors.id_receta_medi}</FormHelperText>
+                )}
+              </FormControl>
               <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 2" }} error={!!touched.estado_medi && !!errors.estado_medi}>
                 <InputLabel htmlFor="estadp-select" sx={{ fontSize: 14 }}>Estado</InputLabel>
                 <Select

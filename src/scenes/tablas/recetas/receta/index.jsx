@@ -138,7 +138,7 @@ const Form = () => {
                 error={!!touched.id_consulta_rece && !!errors.id_consulta_rece}
               >
                 <InputLabel htmlFor="id_consulta_rece-select" sx={{ fontSize: 14 }}>
-                  Receta
+                  Consulta
                 </InputLabel>
                 <Select
                   value={values.id_consulta_rece}
@@ -152,7 +152,7 @@ const Form = () => {
                   }}
                 >
                   <MenuItem value="" disabled>
-                    Seleccionar ID Receta
+                    Seleccionar ID Consulta
                   </MenuItem>
                   {consultaOptions.map((consulta) => (
                     <MenuItem key={consulta.id_cons} value={consulta.id_cons}>

@@ -1,9 +1,9 @@
-import { Box, Button, TextField, FormControl, Select, MenuItem, FormHelperText, Typography, InputLabel   } from "@mui/material";
+import { Box, Button, TextField, FormControl, Select, MenuItem, FormHelperText, Typography, InputLabel } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../../../components/Header";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
@@ -13,27 +13,39 @@ const ActEspecialidad = () => {
   // State para manejar el estado de la respuesta de la API
   const [apiResponse, setApiResponse] = useState(null);
   const [apiError, setApiError] = useState(null);
-
+  const [departamentoOptions, setDepartamentoOptions] = useState([]);
+  const [rows, setRows] = useState([]);
   const {
     id_espe,
-    encargado_espe, 
+    encargado_espe,
     descripcion_espe,
     id_departamento_espe,
     estado_espe,
-  } = useParams(); 
+  } = useParams();
+  useEffect(() => {
+    const fetchDepartamentoOptions = async () => {
+      try {
+        const response = await axios.get("http://localhost:9090/departamentos");
+        const data = response.data;
+        setDepartamentoOptions(data);
+      } catch (error) {
+        console.error("Error fetching patient options:", error);
+      }
+    };
+    fetchDepartamentoOptions();
+  }, []);
 
-  const [rows, setRows] = useState([]);
   const initialValues = {
 
     encargado_espe: encargado_espe,
     descripcion_espe: descripcion_espe,
     id_departamento_espe: id_departamento_espe,
-    estado_espe: estado_espe, 
+    estado_espe: estado_espe,
   };
   const handleUpdate = async (row) => {
-    
+
     // Invert the estado_pac value when the button is clicked
-    
+
     //const navigate = useNavigate();
 
     // Prepare the data object to be sent in the PUT request
@@ -42,12 +54,12 @@ const ActEspecialidad = () => {
       descripcion_espe: row.descripcion_espe,
       id_departamento_espe: row.id_departamento_espe,
       estado_espe: row.estado_espe,
-     
+
     };
 
     // Send the updated data to the API using the PUT method
 
-   
+
     try {
 
       await axios.put(`http://localhost:9090/especialidades/${id_espe}`, updatedData);
@@ -66,12 +78,12 @@ const ActEspecialidad = () => {
       alert("No se pudieron modificar los datos de Especialidad");
     };
     row.encargado_espe = "";
-    row.descripcion_espe= "";
+    row.descripcion_espe = "";
     row.id_departamento_espe = 0;
-    row.estado_espe = null; 
+    row.estado_espe = null;
   };
-   // Función para enviar los datos del formulario a la API
-   const handleSubmitApi = async (values) => {
+  // Función para enviar los datos del formulario a la API
+  const handleSubmitApi = async (values) => {
     try {
       // Realiza una solicitud POST a la API con los datos del formulario
       const response = await axios.post("http://localhost:9090/especialidades", values);
@@ -125,19 +137,39 @@ const ActEspecialidad = () => {
                 helperText={touched.encargado_espe && errors.encargado_espe}
                 sx={{ gridColumn: "span 2" }}
               />
-              <TextField
+              <FormControl
                 fullWidth
                 variant="filled"
-                type="text"
-                label="ID Departamento"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.id_departamento_espe}
-                name="id_departamento_espe"
-                error={!!touched.id_departamento_espe && !!errors.id_departamento_espe}
-                helperText={touched.id_departamento_espe && errors.id_departamento_espe}
                 sx={{ gridColumn: "span 2" }}
-              />
+                error={!!touched.id_departamento_espe && !!errors.id_departamento_espe}
+              >
+                <InputLabel htmlFor="id_departamento_espe-select" sx={{ fontSize: 14 }}>
+                  Departamento
+                </InputLabel>
+                <Select
+                  value={values.id_departamento_espe}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  name="id_departamento_espe"
+                  displayEmpty
+                  inputProps={{
+                    name: 'id_departamento_espe',
+                    id: 'id_departamento_espe-select',
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Seleccionar Departamento
+                  </MenuItem>
+                  {departamentoOptions.map((departamento) => (
+                    <MenuItem key={departamento.id_depa} value={departamento.id_depa}>
+                      {departamento.id_depa} - {departamento.oficina_depa} - #Emp: {departamento.num_empl_depa}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {touched.id_departamento_espe && errors.id_departamento_espe && (
+                  <FormHelperText>{errors.id_paid_medico_consciente_cons}</FormHelperText>
+                )}
+              </FormControl>
               <TextField
                 fullWidth
                 variant="filled"
@@ -152,7 +184,7 @@ const ActEspecialidad = () => {
                 sx={{ gridColumn: "span 4" }}
               />
               <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 2" }} error={!!touched.estado_espe && !!errors.estado_espe}>
-              <InputLabel htmlFor="estadp-select" sx={{ fontSize: 14 }}>Estado</InputLabel>
+                <InputLabel htmlFor="estadp-select" sx={{ fontSize: 14 }}>Estado</InputLabel>
                 <Select
                   value={values.estado_espe}
                   onChange={handleChange}
@@ -167,8 +199,8 @@ const ActEspecialidad = () => {
                   <MenuItem value="" disabled>
                     Estado
                   </MenuItem>
-                  <MenuItem value= "true" >Activo</MenuItem>
-                  <MenuItem value= "false">Inactivo</MenuItem>
+                  <MenuItem value="true" >Activo</MenuItem>
+                  <MenuItem value="false">Inactivo</MenuItem>
                 </Select>
                 {touched.estado_espe && errors.estado_espe && <FormHelperText>{errors.estado_espe}</FormHelperText>}
               </FormControl>
@@ -205,9 +237,9 @@ const checkoutSchema = yup.object().shape({
   estado_espe: yup.boolean().required("required"),
 });
 const initialValues = {
-  encargado_espe:"",
+  encargado_espe: "",
   descripcion_espe: "",
-  id_departamento_espe:0,
+  id_departamento_espe: 0,
   estado_espe: null,
 
 

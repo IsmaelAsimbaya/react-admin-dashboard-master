@@ -119,7 +119,7 @@ useEffect(() => {
                   ID Laboratorio
                 </InputLabel>
                 <Select
-                  value={values.id_paciente_cons}
+                  value={values.id_laboratorio_indu}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   name="id_laboratorio_indu"

@@ -3,7 +3,7 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../../../components/Header";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 const ActActualizar = () => {
@@ -12,6 +12,9 @@ const ActActualizar = () => {
   // State para manejar el estado de la respuesta de la API
   const [apiResponse, setApiResponse] = useState(null);
   const [apiError, setApiError] = useState(null);
+  const [patientOptions, setPatientOptions] = useState([]);
+  const [medicoOptions, setMedicosOptions] = useState([]);
+  const [personalOptions, setPersonalOptions] = useState([]);
   const {
     id_labo,
     nombre_pac_labo,
@@ -23,6 +26,39 @@ const ActActualizar = () => {
     estado_labo,
   } = useParams();
   const [rows, setRows] = useState([]);
+  useEffect(() => {
+    const fetchPatientOptions = async () => {
+      try {
+        const response = await axios.get("http://localhost:9090/pacientes");
+        const data = response.data;
+        setPatientOptions(data);
+      } catch (error) {
+        console.error("Error fetching patient options:", error);
+      }
+    };
+    const fetchMedicosOptions = async () => {
+      try {
+        const response = await axios.get("http://localhost:9090/medicos");
+        const data = response.data;
+        setMedicosOptions(data);
+      } catch (error) {
+        console.error("Error fetching medicos options:", error);
+      }
+    };
+    const fetchPersonalOptions = async () => {
+      try {
+        const response = await axios.get("http://localhost:9090/personal");
+        const data = response.data;
+        setPersonalOptions(data);
+      } catch (error) {
+        console.error("Error fetching personal options:", error);
+      }
+    };
+
+    fetchMedicosOptions();
+    fetchPatientOptions();
+    fetchPersonalOptions();
+  }, []);
   const initialValues = {
 
     nombre_pac_labo: nombre_pac_labo,
@@ -35,9 +71,9 @@ const ActActualizar = () => {
   };
 
   const handleUpdate = async (row) => {
-    
+
     const updatedData = {
-      
+
       nombre_pac_labo: row.nombre_pac_labo,
       med_solicitante_labo: row.med_solicitante_labo,
       fecha_labo: row.fecha_labo,
@@ -45,12 +81,12 @@ const ActActualizar = () => {
       observaciones_labo: row.observaciones_labo,
       id_personal_labo: row.id_personal_labo,
       estado_labo: row.estado_labo,
-     
+
     };
 
     // Send the updated data to the API using the PUT method
 
-   
+
     try {
 
       await axios.put(`http://localhost:9090/laboratorios/${id_labo}`, updatedData);
@@ -68,13 +104,13 @@ const ActActualizar = () => {
       console.error("Error al obtener datos del Laboratorio:", error);
       alert("No se pudieron modificar los datos de Laboratorio");
     };
-    row.nombre_pac_labo = ""; 
-    row.med_solicitante_labo= ""; 
-    row.fecha_labo= ""; 
-    row.tipo_prueba_labo= ""; 
-    row.observaciones_labo = ""; 
-    row.id_personal_labo=  0; 
-    row.estado_labo= null; 
+    row.nombre_pac_labo = "";
+    row.med_solicitante_labo = "";
+    row.fecha_labo = "";
+    row.tipo_prueba_labo = "";
+    row.observaciones_labo = "";
+    row.id_personal_labo = 0;
+    row.estado_labo = null;
   };
 
   return (
@@ -84,7 +120,7 @@ const ActActualizar = () => {
       <Formik
         onSubmit={handleUpdate} // Utiliza la función para enviar los datos a la API
         initialValues={initialValues}
-        validationSchema={checkoutSchema}s
+        validationSchema={checkoutSchema} s
       >
         {({
           values,
@@ -103,32 +139,72 @@ const ActActualizar = () => {
                 "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
               }}
             >
-              <TextField
+              <FormControl
                 fullWidth
                 variant="filled"
-                type="text"
-                label="Nombre Paciente"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.nombre_pac_labo}
-                name="nombre_pac_labo"
+                sx={{ gridColumn: "span 2" }}
                 error={!!touched.nombre_pac_labo && !!errors.nombre_pac_labo}
-                helperText={touched.nombre_pac_labo && errors.nombre_pac_labo}
-                sx={{ gridColumn: "span 2" }}
-              />
-              <TextField
+              >
+                <InputLabel htmlFor="nombre_pac_labo-select" sx={{ fontSize: 14 }}>
+                  Paciente
+                </InputLabel>
+                <Select
+                  value={values.nombre_pac_labo}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  name="nombre_pac_labo"
+                  displayEmpty
+                  inputProps={{
+                    name: 'nombre_pac_labo',
+                    id: 'nombre_pac_labo-select',
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Seleccionar ID Paciente
+                  </MenuItem>
+                  {patientOptions.map((patient) => (
+                    <MenuItem key={patient.id_pac} value={patient.id_pac}>
+                      {patient.id_pac} - {patient.nombre_pac} {patient.apellido_paterno_pac}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {touched.nombre_pac_labo && errors.nombre_pac_labo && (
+                  <FormHelperText>{errors.nombre_pac_labo}</FormHelperText>
+                )}
+              </FormControl>
+              <FormControl
                 fullWidth
                 variant="filled"
-                type="text"
-                label="Medico Solicitante"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.med_solicitante_labo}
-                name="med_solicitante_labo"
-                error={!!touched.med_solicitante_labo && !!errors.med_solicitante_labo}
-                helperText={touched.med_solicitante_labo && errors.med_solicitante_labo}
                 sx={{ gridColumn: "span 2" }}
-              />
+                error={!!touched.med_solicitante_labo && !!errors.med_solicitante_labo}
+              >
+                <InputLabel htmlFor="med_solicitante_labo-select" sx={{ fontSize: 14 }}>
+                  Médico
+                </InputLabel>
+                <Select
+                  value={values.med_solicitante_labo}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  name="med_solicitante_labo"
+                  displayEmpty
+                  inputProps={{
+                    name: 'med_solicitante_labo',
+                    id: 'med_solicitante_labo-select',
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Seleccionar Médico
+                  </MenuItem>
+                  {medicoOptions.map((medico) => (
+                    <MenuItem key={medico.id_medi} value={medico.id_medi}>
+                      {medico.id_medi} - {medico.nombre_medi}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {touched.med_solicitante_labo && errors.id_medico_cons && (
+                  <FormHelperText>{errors.id_personal_labo}</FormHelperText>
+                )}
+              </FormControl>
               <TextField
                 fullWidth
                 variant="filled"
@@ -155,19 +231,39 @@ const ActActualizar = () => {
                 helperText={touched.tipo_prueba_labo && errors.tipo_prueba_labo}
                 sx={{ gridColumn: "span 2" }}
               />
-              <TextField
+              <FormControl
                 fullWidth
                 variant="filled"
-                type="text"
-                label="ID Personal"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.id_personal_labo}
-                name="id_personal_labo"
-                error={!!touched.id_personal_labo && !!errors.id_personal_labo}
-                helperText={touched.id_personal_labo && errors.id_personal_labo}
                 sx={{ gridColumn: "span 2" }}
-              />
+                error={!!touched.id_personal_labo && !!errors.id_personal_labo}
+              >
+                <InputLabel htmlFor="id_personal_labo-select" sx={{ fontSize: 14 }}>
+                  Personal
+                </InputLabel>
+                <Select
+                  value={values.id_personal_labo}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  name="id_personal_labo"
+                  displayEmpty
+                  inputProps={{
+                    name: 'id_personal_labo',
+                    id: 'id_personal_labo-select',
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Seleccionar el personal encargado
+                  </MenuItem>
+                  {personalOptions.map((personal) => (
+                    <MenuItem key={personal.id_pers} value={personal.id_pers}>
+                      {personal.id_pers} - Personal ID: {personal.encargado_pers}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {touched.id_personal_labo && errors.id_personal_labo && (
+                  <FormHelperText>{errors.id_personal_labo}</FormHelperText>
+                )}
+              </FormControl>
               <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 2" }} error={!!touched.estado_labo && !!errors.estado_labo}>
                 <InputLabel htmlFor="estadp-select" sx={{ fontSize: 14 }}>Estado</InputLabel>
                 <Select
