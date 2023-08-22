@@ -115,7 +115,7 @@ const ActDepartamento = () => {
                 fullWidth
                 variant="filled"
                 type="text"
-                label="N.Empleado"
+                label="N. de empleados"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.num_empl_depa}

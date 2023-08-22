@@ -1,9 +1,9 @@
-import { Box, Button, TextField, FormControl,InputLabel, Select, MenuItem, FormHelperText, Typography   } from "@mui/material";
+import { Box, Button, TextField, FormControl, InputLabel, Select, MenuItem, FormHelperText, Typography } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../../../components/Header";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 const Form = () => {
@@ -12,9 +12,10 @@ const Form = () => {
   // State para manejar el estado de la respuesta de la API
   const [apiResponse, setApiResponse] = useState(null);
   const [apiError, setApiError] = useState(null);
+  const [especialidadOptions, setEspecialidadOptions] = useState([]);
 
-   // Función para enviar los datos del formulario a la API
-   const handleSubmitApi = async (values) => {
+  // Función para enviar los datos del formulario a la API
+  const handleSubmitApi = async (values) => {
     console.log(values);
     try {
       // Realiza una solicitud POST a la API con los datos del formulario
@@ -29,7 +30,19 @@ const Form = () => {
       setApiError(error.message || "Hubo un error al conectar con la API.");
     }
   };
+  useEffect(() => {
 
+    const fetchEspecialidadesOptions = async () => {
+      try {
+        const response = await axios.get("http://localhost:9090/especialidades");
+        const data = response.data;
+        setEspecialidadOptions(data);
+      } catch (error) {
+        console.error("Error fetching medicos options:", error);
+      }
+    };
+    fetchEspecialidadesOptions();
+  }, []);
   return (
     <Box m="20px">
       <Header title="CREAR MEDICO" subtitle="Crear un nuevo Perfil de Medico" />
@@ -82,19 +95,39 @@ const Form = () => {
                 helperText={touched.apellidos_medi && errors.apellidos_medi}
                 sx={{ gridColumn: "span 2" }}
               />
-              <TextField
+              <FormControl
                 fullWidth
                 variant="filled"
-                type="text"
-                label="ID Especialidad"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.id_especialidad_medi}
-                name="id_especialidad_medi"
-                error={!!touched.id_especialidad_medi && !!errors.id_especialidad_medi}
-                helperText={touched.id_especialidad_medi && errors.id_especialidad_medi}
                 sx={{ gridColumn: "span 2" }}
-              />
+                error={!!touched.id_especialidad_medi && !!errors.id_especialidad_medi}
+              >
+                <InputLabel htmlFor="id_especialidad_medi-select" sx={{ fontSize: 14 }}>
+                  Especialidad 
+                </InputLabel>
+                <Select
+                  value={values.id_especialidad_medi}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  name="id_especialidad_medi"
+                  displayEmpty
+                  inputProps={{
+                    name: 'id_especialidad_medi',
+                    id: 'id_especialidad_medi-select',
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Seleccionar ID Médico
+                  </MenuItem>
+                  {especialidadOptions.map((especialidad) => (
+                    <MenuItem key={especialidad.id_espe} value={especialidad.id_espe}>
+                      {especialidad.id_espe} - {especialidad.descripcion_espe} - {especialidad.encargado_espe}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {touched.id_especialidad_medi && errors.id_especialidad_medi && (
+                  <FormHelperText>{errors.id_paid_medico_consciente_cons}</FormHelperText>
+                )}
+              </FormControl>
               <TextField
                 fullWidth
                 variant="filled"
@@ -148,7 +181,7 @@ const Form = () => {
                 sx={{ gridColumn: "span 2" }}
               />
               <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 2" }} error={!!touched.estado_medi && !!errors.estado_medi}>
-              <InputLabel htmlFor="estadp-select" sx={{ fontSize: 14 }}>Estado</InputLabel>
+                <InputLabel htmlFor="estadp-select" sx={{ fontSize: 14 }}>Estado</InputLabel>
                 <Select
                   value={values.estado_medi}
                   onChange={handleChange}
@@ -163,8 +196,8 @@ const Form = () => {
                   <MenuItem value="" disabled>
                     Estado
                   </MenuItem>
-                  <MenuItem value= "true" >Activo</MenuItem>
-                  <MenuItem value= "false">Inactivo</MenuItem>
+                  <MenuItem value="true" >Activo</MenuItem>
+                  <MenuItem value="false">Inactivo</MenuItem>
                 </Select>
                 {touched.estado_medi && errors.estado_medi && <FormHelperText>{errors.estado_medi}</FormHelperText>}
               </FormControl>
@@ -221,7 +254,7 @@ const checkoutSchema = yup.object().shape({
 });
 const initialValues = {
   nombre_medi: "",
-  apellidos_medi:"",
+  apellidos_medi: "",
   id_especialidad_medi: 0,
   hospital_medi: "",
   direccion_medi: "",

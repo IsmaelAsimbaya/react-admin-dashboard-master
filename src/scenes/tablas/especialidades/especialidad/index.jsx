@@ -3,7 +3,7 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../../../components/Header";
-import { useState } from "react";
+import { useState , useEffect } from "react";
 import axios from "axios";
 
 const Form = () => {
@@ -12,7 +12,7 @@ const Form = () => {
   // State para manejar el estado de la respuesta de la API
   const [apiResponse, setApiResponse] = useState(null);
   const [apiError, setApiError] = useState(null);
-
+  const [departamentoOptions, setDepartamentoOptions] = useState([]);
    // Función para enviar los datos del formulario a la API
    const handleSubmitApi = async (values) => {
     try {
@@ -28,7 +28,18 @@ const Form = () => {
       setApiError(error.message || "Hubo un error al conectar con la API.");
     }
   };
-
+  useEffect(() => {
+    const fetchDepartamentoOptions = async () => {
+      try {
+        const response = await axios.get("http://localhost:9090/departamentos");
+        const data = response.data;
+        setDepartamentoOptions(data);
+      } catch (error) {
+        console.error("Error fetching patient options:", error);
+      }
+    };
+    fetchDepartamentoOptions();
+  }, []);
   return (
     <Box m="20px">
       <Header title="CREAR ESPECIALIDAD" subtitle="Crear una nueva Especialidad" />
@@ -68,19 +79,39 @@ const Form = () => {
                 helperText={touched.encargado_espe && errors.encargado_espe}
                 sx={{ gridColumn: "span 2" }}
               />
-              <TextField
+              <FormControl
                 fullWidth
                 variant="filled"
-                type="text"
-                label="ID Departamento"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.id_departamento_espe}
-                name="id_departamento_espe"
-                error={!!touched.id_departamento_espe && !!errors.id_departamento_espe}
-                helperText={touched.id_departamento_espe && errors.id_departamento_espe}
                 sx={{ gridColumn: "span 2" }}
-              />
+                error={!!touched.id_departamento_espe && !!errors.id_departamento_espe}
+              >
+                <InputLabel htmlFor="id_departamento_espe-select" sx={{ fontSize: 14 }}>
+                  Departamento
+                </InputLabel>
+                <Select
+                  value={values.id_medico_cons}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  name="id_departamento_espe"
+                  displayEmpty
+                  inputProps={{
+                    name: 'id_departamento_espe',
+                    id: 'id_departamento_espe-select',
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Seleccionar Departamento
+                  </MenuItem>
+                  {departamentoOptions.map((departamento) => (
+                    <MenuItem key={departamento.id_depa} value={departamento.id_depa}>
+                      {departamento.id_depa} - {departamento.oficina_depa} - #Emp: {departamento.num_empl_depa} 
+                    </MenuItem>
+                  ))}
+                </Select>
+                {touched.id_departamento_espe && errors.id_departamento_espe && (
+                  <FormHelperText>{errors.id_paid_medico_consciente_cons}</FormHelperText>
+                )}
+              </FormControl>
               <TextField
                 fullWidth
                 variant="filled"

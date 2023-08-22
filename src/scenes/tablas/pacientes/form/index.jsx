@@ -201,7 +201,8 @@ const Form = () => {
                 sx={{ gridColumn: "span 2" }}
               />
               <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 2" }} error={!!touched.estado_pac && !!errors.estado_pac}>
-                <Select
+              <InputLabel htmlFor="estadp-select" sx={{ fontSize: 14 }}>Estado</InputLabel>
+                              <Select
                   value={values.estado_pac}
                   onChange={handleChange}
                   onBlur={handleBlur}

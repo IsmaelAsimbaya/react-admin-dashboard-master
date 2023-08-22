@@ -13,6 +13,7 @@ const Form = () => {
   const [apiResponse, setApiResponse] = useState(null);
   const [apiError, setApiError] = useState(null);
   const [proveedorOptions, setProveedorOptions] = useState([]);
+  const [recetaOptions, setRecetaOptions] = useState([]);
    // Función para enviar los datos del formulario a la API
    const handleSubmitApi = async (values) => {
     try {
@@ -38,7 +39,17 @@ const Form = () => {
         console.error("Error fetching proveedores options:", error);
       }
     };
+    const fetchRecetaOptions = async () => {
+      try {
+        const response = await axios.get("http://localhost:9090/recetas");
+        const data = response.data;
+        setRecetaOptions(data);
+      } catch (error) {
+        console.error("Error fetching recetas options:", error);
+      }
+    };
     fetchPatientOptions();
+    fetchRecetaOptions(); 
   }, []);
   return (
     <Box m="20px">
@@ -146,19 +157,39 @@ const Form = () => {
                   <FormHelperText>{errors.id_proveedor_medi}</FormHelperText>
                 )}
               </FormControl>
-              <TextField
+              <FormControl
                 fullWidth
                 variant="filled"
-                type="text"
-                label="ID Receta"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.id_receta_medi}
-                name="id_receta_medi"
-                error={!!touched.id_receta_medi && !!errors.id_receta_medi}
-                helperText={touched.id_receta_medi && errors.id_receta_medi}
                 sx={{ gridColumn: "span 2" }}
-              />
+                error={!!touched.id_receta_medi && !!errors.id_receta_medi}
+              >
+                <InputLabel htmlFor="id_receta_medi-select" sx={{ fontSize: 14 }}>
+                  Receta
+                </InputLabel>
+                <Select
+                  value={values.id_receta_medi}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  name="id_receta_medi"
+                  displayEmpty
+                  inputProps={{
+                    name: 'id_receta_medi',
+                    id: 'id_receta_medi-select',
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Seleccionar la receta
+                  </MenuItem>
+                  {recetaOptions.map((receta) => (
+                    <MenuItem key={receta.id_rece} value={receta.id_rece}>
+                      {receta.id_rece} - {receta.comentarios_rece} 
+                    </MenuItem>
+                  ))}
+                </Select>
+                {touched.id_receta_medi && errors.id_receta_medi && (
+                  <FormHelperText>{errors.id_receta_medi}</FormHelperText>
+                )}
+              </FormControl>
               <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 2" }} error={!!touched.estado_medi && !!errors.estado_medi}>
               <InputLabel htmlFor="estadp-select" sx={{ fontSize: 14 }}>Estado</InputLabel>
                 <Select

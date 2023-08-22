@@ -1,9 +1,9 @@
-import { Box, Button, TextField, FormControl, Select, MenuItem, FormHelperText, Typography , InputLabel} from "@mui/material";
+import { Box, Button, TextField, FormControl, Select, MenuItem, FormHelperText, Typography, InputLabel } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../../../components/Header";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 const Form = () => {
@@ -12,7 +12,9 @@ const Form = () => {
   // State para manejar el estado de la respuesta de la API
   const [apiResponse, setApiResponse] = useState(null);
   const [apiError, setApiError] = useState(null);
-
+  const [patientOptions, setPatientOptions] = useState([]);
+  const [medicoOptions, setMedicosOptions] = useState([]);
+  const [personalOptions, setPersonalOptions] = useState([]);
   // Función para enviar los datos del formulario a la API
   const handleSubmitApi = async (values) => {
     try {
@@ -28,7 +30,39 @@ const Form = () => {
       setApiError(error.message || "Hubo un error al conectar con la API.");
     }
   };
+  useEffect(() => {
+    const fetchPatientOptions = async () => {
+      try {
+        const response = await axios.get("http://localhost:9090/pacientes");
+        const data = response.data;
+        setPatientOptions(data);
+      } catch (error) {
+        console.error("Error fetching patient options:", error);
+      }
+    };
+    const fetchMedicosOptions = async () => {
+      try {
+        const response = await axios.get("http://localhost:9090/medicos");
+        const data = response.data;
+        setMedicosOptions(data);
+      } catch (error) {
+        console.error("Error fetching medicos options:", error);
+      }
+    };
+    const fetchPersonalOptions = async () => {
+      try {
+        const response = await axios.get("http://localhost:9090/personal");
+        const data = response.data;
+        setPersonalOptions(data);
+      } catch (error) {
+        console.error("Error fetching personal options:", error);
+      }
+    };
 
+    fetchMedicosOptions();
+    fetchPatientOptions();
+    fetchPersonalOptions();
+  }, []);
   return (
     <Box m="20px">
       <Header title="CREAR LABORATORIO" subtitle="Crear un nuevo Perfil de Laboratorio" />
@@ -55,32 +89,72 @@ const Form = () => {
                 "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
               }}
             >
-              <TextField
+              <FormControl
                 fullWidth
                 variant="filled"
-                type="text"
-                label="Nombre Paciente"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.nombre_pac_labo}
-                name="nombre_pac_labo"
+                sx={{ gridColumn: "span 2" }}
                 error={!!touched.nombre_pac_labo && !!errors.nombre_pac_labo}
-                helperText={touched.nombre_pac_labo && errors.nombre_pac_labo}
-                sx={{ gridColumn: "span 2" }}
-              />
-              <TextField
+              >
+                <InputLabel htmlFor="nombre_pac_labo-select" sx={{ fontSize: 14 }}>
+                  Paciente
+                </InputLabel>
+                <Select
+                  value={values.nombre_pac_labo}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  name="nombre_pac_labo"
+                  displayEmpty
+                  inputProps={{
+                    name: 'nombre_pac_labo',
+                    id: 'nombre_pac_labo-select',
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Seleccionar ID Paciente
+                  </MenuItem>
+                  {patientOptions.map((patient) => (
+                    <MenuItem key={patient.id_pac} value={patient.id_pac}>
+                      {patient.id_pac} - {patient.nombre_pac} {patient.apellido_paterno_pac}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {touched.nombre_pac_labo && errors.nombre_pac_labo && (
+                  <FormHelperText>{errors.nombre_pac_labo}</FormHelperText>
+                )}
+              </FormControl>
+              <FormControl
                 fullWidth
                 variant="filled"
-                type="text"
-                label="Medico Solicitante"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.med_solicitante_labo}
-                name="med_solicitante_labo"
-                error={!!touched.med_solicitante_labo && !!errors.med_solicitante_labo}
-                helperText={touched.med_solicitante_labo && errors.med_solicitante_labo}
                 sx={{ gridColumn: "span 2" }}
-              />
+                error={!!touched.med_solicitante_labo && !!errors.med_solicitante_labo}
+              >
+                <InputLabel htmlFor="med_solicitante_labo-select" sx={{ fontSize: 14 }}>
+                  Médico
+                </InputLabel>
+                <Select
+                  value={values.med_solicitante_labo}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  name="med_solicitante_labo"
+                  displayEmpty
+                  inputProps={{
+                    name: 'med_solicitante_labo',
+                    id: 'med_solicitante_labo-select',
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Seleccionar Médico
+                  </MenuItem>
+                  {medicoOptions.map((medico) => (
+                    <MenuItem key={medico.id_medi} value={medico.id_medi}>
+                      {medico.id_medi} - {medico.nombre_medi}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {touched.med_solicitante_labo && errors.id_medico_cons && (
+                  <FormHelperText>{errors.id_personal_labo}</FormHelperText>
+                )}
+              </FormControl>
               <TextField
                 fullWidth
                 variant="filled"
@@ -107,19 +181,39 @@ const Form = () => {
                 helperText={touched.tipo_prueba_labo && errors.tipo_prueba_labo}
                 sx={{ gridColumn: "span 2" }}
               />
-              <TextField
+              <FormControl
                 fullWidth
                 variant="filled"
-                type="text"
-                label="ID Personal"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.id_personal_labo}
-                name="id_personal_labo"
-                error={!!touched.id_personal_labo && !!errors.id_personal_labo}
-                helperText={touched.id_personal_labo && errors.id_personal_labo}
                 sx={{ gridColumn: "span 2" }}
-              />
+                error={!!touched.id_personal_labo && !!errors.id_personal_labo}
+              >
+                <InputLabel htmlFor="id_personal_labo-select" sx={{ fontSize: 14 }}>
+                  Personal
+                </InputLabel>
+                <Select
+                  value={values.id_personal_labo}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  name="id_personal_labo"
+                  displayEmpty
+                  inputProps={{
+                    name: 'id_personal_labo',
+                    id: 'id_personal_labo-select',
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Seleccionar el personal encargado
+                  </MenuItem>
+                  {personalOptions.map((personal) => (
+                    <MenuItem key={personal.id_pers} value={personal.id_pers}>
+                      {personal.id_pers} - {personal.encargado_pers}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {touched.id_personal_labo && errors.id_personal_labo && (
+                  <FormHelperText>{errors.id_personal_labo}</FormHelperText>
+                )}
+              </FormControl>
               <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 2" }} error={!!touched.estado_labo && !!errors.estado_labo}>
                 <InputLabel htmlFor="estadp-select" sx={{ fontSize: 14 }}>Estado</InputLabel>
                 <Select

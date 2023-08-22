@@ -3,7 +3,7 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../../../components/Header";
-import { useState } from "react";
+import { useState , useEffect} from "react";
 import axios from "axios";
 
 
@@ -13,7 +13,8 @@ const Form = () => {
   // State para manejar el estado de la respuesta de la API
   const [apiResponse, setApiResponse] = useState(null);
   const [apiError, setApiError] = useState(null);
-
+  const [patientOptions, setPatientOptions] = useState([]);
+  const [recetaOptions, setRecetaOptions] = useState([]);
    // Función para enviar los datos del formulario a la API
    const handleSubmitApi = async (values) => {
     try {
@@ -29,7 +30,28 @@ const Form = () => {
       setApiError(error.message || "Hubo un error al conectar con la API.");
     }
   };
-
+  useEffect(() => {
+    const fetchPatientOptions = async () => {
+      try {
+        const response = await axios.get("http://localhost:9090/pacientes");
+        const data = response.data;
+        setPatientOptions(data);
+      } catch (error) {
+        console.error("Error fetching patient options:", error);
+      }
+    };
+    const fetchRecetaOptions = async () => {
+      try {
+        const response = await axios.get("http://localhost:9090/recetas");
+        const data = response.data;
+        setRecetaOptions(data);
+      } catch (error) {
+        console.error("Error fetching medicos options:", error);
+      }
+    };
+    fetchRecetaOptions();
+    fetchPatientOptions();
+  }, []);
   return (
     <Box m="20px">
       <Header title="CREAR FACTURA" subtitle="Crear una nueva Factura" />
@@ -56,19 +78,39 @@ const Form = () => {
                 "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
               }}
             >
-              <TextField
+              <FormControl
                 fullWidth
                 variant="filled"
-                type="text"
-                label="Paciente"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.paciente_fact}
-                name="paciente_fact"
-                error={!!touched.paciente_fact && !!errors.paciente_fact}
-                helperText={touched.paciente_fact && errors.paciente_fact}
                 sx={{ gridColumn: "span 2" }}
-              />
+                error={!!touched.paciente_fact && !!errors.paciente_fact}
+              >
+                <InputLabel htmlFor="paciente_fact-select" sx={{ fontSize: 14 }}>
+                  Paciente
+                </InputLabel>
+                <Select
+                  value={values.id_paciente_cons}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  name="paciente_fact"
+                  displayEmpty
+                  inputProps={{
+                    name: 'paciente_fact',
+                    id: 'paciente_fact-select',
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Seleccionar ID Paciente
+                  </MenuItem>
+                  {patientOptions.map((patient) => (
+                    <MenuItem key={patient.id_pac} value={patient.id_pac}>
+                      {patient.id_pac} - {patient.nombre_pac} {patient.apellido_paterno_pac}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {touched.paciente_fact && errors.paciente_fact && (
+                  <FormHelperText>{errors.id_paciente_cons}</FormHelperText>
+                )}
+              </FormControl>
               <TextField
                 fullWidth
                 variant="filled"
@@ -116,19 +158,39 @@ const Form = () => {
                 </Select>
                 {touched.metodo_pago_fact && errors.metodo_pago_fact && <FormHelperText>{errors.metodo_pago_fact}</FormHelperText>}
               </FormControl>
-              <TextField
+              <FormControl
                 fullWidth
                 variant="filled"
-                type="text"
-                label="ID Receta"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.id_receta_fact}
-                name="id_receta_fact"
-                error={!!touched.id_receta_fact && !!errors.id_receta_fact}
-                helperText={touched.id_receta_fact && errors.id_receta_fact}
                 sx={{ gridColumn: "span 2" }}
-              />
+                error={!!touched.id_receta_fact && !!errors.id_receta_fact}
+              >
+                <InputLabel htmlFor="id_receta_fact-select" sx={{ fontSize: 14 }}>
+                  Receta
+                </InputLabel>
+                <Select
+                  value={values.id_paciente_cons}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  name="id_receta_fact"
+                  displayEmpty
+                  inputProps={{
+                    name: 'id_receta_fact',
+                    id: 'id_receta_fact-select',
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Seleccionar receta
+                  </MenuItem>
+                  {recetaOptions.map((receta) => (
+                    <MenuItem key={receta.id_rece} value={receta.id_rece}>
+                      {receta.id_rece} - {receta.comentarios_rece} - Administracion: {receta.via_administracion_rece} 
+                    </MenuItem>
+                  ))}
+                </Select>
+                {touched.id_receta_fact && errors.id_receta_fact && (
+                  <FormHelperText>{errors.id_paciente_cons}</FormHelperText>
+                )}
+              </FormControl>
               <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 2" }} error={!!touched.estado_fact && !!errors.estado_fact}>
               <InputLabel htmlFor="estadp-select" sx={{ fontSize: 14 }}>Estado</InputLabel>
                 <Select

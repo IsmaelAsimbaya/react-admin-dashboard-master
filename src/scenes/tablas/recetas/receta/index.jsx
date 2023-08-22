@@ -3,7 +3,7 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../../../components/Header";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 const Form = () => {
@@ -12,7 +12,7 @@ const Form = () => {
   // State para manejar el estado de la respuesta de la API
   const [apiResponse, setApiResponse] = useState(null);
   const [apiError, setApiError] = useState(null);
-
+  const [consultaOptions, setConsultaOptions] = useState([]);
    // Función para enviar los datos del formulario a la API
    const handleSubmitApi = async (values) => {
     try {
@@ -28,7 +28,18 @@ const Form = () => {
       setApiError(error.message || "Hubo un error al conectar con la API.");
     }
   };
-
+  useEffect(() => {
+    const fetchConsultaOptions = async () => {
+      try {
+        const response = await axios.get("http://localhost:9090/consultas");
+        const data = response.data;
+        setConsultaOptions(data);
+      } catch (error) {
+        console.error("Error fetching consultas options:", error);
+      }
+    };
+    fetchConsultaOptions();
+  }, []);
   return (
     <Box m="20px">
       <Header title="CREAR RECETA" subtitle="Crear un nueva Receta" />
@@ -120,19 +131,39 @@ const Form = () => {
                 helperText={touched.via_administracion_rece && errors.via_administracion_rece}
                 sx={{ gridColumn: "span 2" }}
               />
-              <TextField
+              <FormControl
                 fullWidth
                 variant="filled"
-                type="text"
-                label="ID Consulta"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.id_consulta_rece}
-                name="id_consulta_rece"
-                error={!!touched.id_consulta_rece && !!errors.id_consulta_rece}
-                helperText={touched.id_consulta_rece && errors.id_consulta_rece}
                 sx={{ gridColumn: "span 2" }}
-              />
+                error={!!touched.id_consulta_rece && !!errors.id_consulta_rece}
+              >
+                <InputLabel htmlFor="id_consulta_rece-select" sx={{ fontSize: 14 }}>
+                  Receta
+                </InputLabel>
+                <Select
+                  value={values.id_consulta_rece}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  name="id_consulta_rece"
+                  displayEmpty
+                  inputProps={{
+                    name: 'id_consulta_rece',
+                    id: 'id_consulta_rece-select',
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Seleccionar ID Receta
+                  </MenuItem>
+                  {consultaOptions.map((consulta) => (
+                    <MenuItem key={consulta.id_cons} value={consulta.id_cons}>
+                      {consulta.id_cons} - Pac. ID: {consulta.id_paciente_cons} - {consulta.concepto_cons}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {touched.id_consulta_rece && errors.id_consulta_rece && (
+                  <FormHelperText>{errors.id_consulta_rece}</FormHelperText>
+                )}
+              </FormControl>
               <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 2" }} error={!!touched.estado_rece && !!errors.estado_rece}>
                 <InputLabel htmlFor="estadp-select" sx={{ fontSize: 14 }}>Estado</InputLabel>
                 <Select

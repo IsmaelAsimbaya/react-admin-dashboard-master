@@ -109,7 +109,7 @@ const Contacts = () => {
     },
     {
       field: "nombre_pac_labo",
-      headerName: "Nombre Paciente",
+      headerName: "Paciente",
       flex: 1,
       cellClassName: "name-column--cell",
     },

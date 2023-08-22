@@ -1,9 +1,9 @@
-import { Box, Button, TextField, FormControl, Select, MenuItem, FormHelperText, Typography,InputLabel  } from "@mui/material";
+import { Box, Button, TextField, FormControl, Select, MenuItem, FormHelperText, Typography, InputLabel } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../../../components/Header";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 const Form = () => {
@@ -12,9 +12,11 @@ const Form = () => {
   // State para manejar el estado de la respuesta de la API
   const [apiResponse, setApiResponse] = useState(null);
   const [apiError, setApiError] = useState(null);
+  const [patientOptions, setPatientOptions] = useState([]);
 
-   // Función para enviar los datos del formulario a la API
-   const handleSubmitApi = async (values) => {
+
+  // Función para enviar los datos del formulario a la API
+  const handleSubmitApi = async (values) => {
     try {
       // Realiza una solicitud POST a la API con los datos del formulario
       const response = await axios.post("http://localhost:9090/segurosmedicos", values);
@@ -28,7 +30,18 @@ const Form = () => {
       setApiError(error.message || "Hubo un error al conectar con la API.");
     }
   };
-
+  useEffect(() => {
+    const fetchPatientOptions = async () => {
+      try {
+        const response = await axios.get("http://localhost:9090/pacientes");
+        const data = response.data;
+        setPatientOptions(data);
+      } catch (error) {
+        console.error("Error fetching patient options:", error);
+      }
+    };
+    fetchPatientOptions();
+  }, []);
   return (
     <Box m="20px">
       <Header title="CREAR SEGURO MEDICO" subtitle="Crear un nuevo Perfil de Seguro Medico" />
@@ -133,21 +146,41 @@ const Form = () => {
                 helperText={touched.porc_cobert_segmed && errors.porc_cobert_segmed}
                 sx={{ gridColumn: "span 2" }}
               />
-              <TextField
+              <FormControl
                 fullWidth
                 variant="filled"
-                type="text"
-                label="ID Paciente"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.id_paciente_segmed}
-                name="id_paciente_segmed"
-                error={!!touched.id_paciente_segmed && !!errors.id_paciente_segmed}
-                helperText={touched.id_paciente_segmed && errors.id_paciente_segmed}
                 sx={{ gridColumn: "span 2" }}
-              />
+                error={!!touched.id_paciente_segmed && !!errors.id_paciente_segmed}
+              >
+                <InputLabel htmlFor="id_paciente_segmed-select" sx={{ fontSize: 14 }}>
+                  Paciente
+                </InputLabel>
+                <Select
+                  value={values.id_paciente_segmed}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  name="id_paciente_segmed"
+                  displayEmpty
+                  inputProps={{
+                    name: 'id_paciente_segmed',
+                    id: 'id_paciente_segmed-select',
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Seleccionar Paciente
+                  </MenuItem>
+                  {patientOptions.map((patient) => (
+                    <MenuItem key={patient.id_pac} value={patient.id_pac}>
+                      {patient.id_pac} - {patient.nombre_pac} {patient.apellido_paterno_pac}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {touched.id_paciente_segmed && errors.id_paciente_segmed && (
+                  <FormHelperText>{errors.id_paciente_segmed}</FormHelperText>
+                )}
+              </FormControl>
               <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 2" }} error={!!touched.estado_segmed && !!errors.estado_segmed}>
-              <InputLabel htmlFor="estadp-select" sx={{ fontSize: 14 }}>Estado</InputLabel>
+                <InputLabel htmlFor="estadp-select" sx={{ fontSize: 14 }}>Estado</InputLabel>
                 <Select
                   value={values.estado_segmed}
                   onChange={handleChange}
@@ -162,8 +195,8 @@ const Form = () => {
                   <MenuItem value="" disabled>
                     Estado
                   </MenuItem>
-                  <MenuItem value= "true" >Activo</MenuItem>
-                  <MenuItem value= "false">Inactivo</MenuItem>
+                  <MenuItem value="true" >Activo</MenuItem>
+                  <MenuItem value="false">Inactivo</MenuItem>
                 </Select>
                 {touched.estado_segmed && errors.estado_segmed && <FormHelperText>{errors.estado_segmed}</FormHelperText>}
               </FormControl>
@@ -204,10 +237,10 @@ const checkoutSchema = yup.object().shape({
   estado_segmed: yup.boolean().required("required"),
 });
 const initialValues = {
-  nombre_segmed:"",
+  nombre_segmed: "",
   num_poliza_segmed: "",
-  compania_segmed:"",
-  fecha_segmed:"",
+  compania_segmed: "",
+  fecha_segmed: "",
   tipo_segmed: "",
   porc_cobert_segmed: 0,
   id_paciente_segmed: 0,

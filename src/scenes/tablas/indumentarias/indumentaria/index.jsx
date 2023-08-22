@@ -3,7 +3,7 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../../../components/Header";
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import axios from "axios";
 
 const Form = () => {
@@ -12,6 +12,8 @@ const Form = () => {
   // State para manejar el estado de la respuesta de la API
   const [apiResponse, setApiResponse] = useState(null);
   const [apiError, setApiError] = useState(null);
+  const [laboratorioOptions, setLaboratorioOptions] = useState([]);
+
 
    // Función para enviar los datos del formulario a la API
    const handleSubmitApi = async (values) => {
@@ -28,6 +30,19 @@ const Form = () => {
       setApiError(error.message || "Hubo un error al conectar con la API.");
     }
   };
+useEffect(() => {
+    const fetchLaboratorioOptions = async () => {
+      try {
+        const response = await axios.get("http://localhost:9090/laboratorios");
+        const data = response.data;
+        setLaboratorioOptions(data);
+      } catch (error) {
+        console.error("Error fetching laboratorio options:", error);
+      }
+    };
+    fetchLaboratorioOptions();
+  }, []);
+
 
   return (
     <Box m="20px">
@@ -94,19 +109,39 @@ const Form = () => {
                 helperText={touched.area_indu && errors.area_indu}
                 sx={{ gridColumn: "span 2" }}
               />
-              <TextField
+              <FormControl
                 fullWidth
                 variant="filled"
-                type="text"
-                label="ID Laboratorio"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.id_laboratorio_indu}
-                name="id_laboratorio_indu"
-                error={!!touched.id_laboratorio_indu && !!errors.id_laboratorio_indu}
-                helperText={touched.id_laboratorio_indu && errors.id_laboratorio_indu}
                 sx={{ gridColumn: "span 2" }}
-              />
+                error={!!touched.id_laboratorio_indu && !!errors.id_laboratorio_indu}
+              >
+                <InputLabel htmlFor="id_laboratorio_indu-select" sx={{ fontSize: 14 }}>
+                  ID Laboratorio
+                </InputLabel>
+                <Select
+                  value={values.id_paciente_cons}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  name="id_laboratorio_indu"
+                  displayEmpty
+                  inputProps={{
+                    name: 'id_laboratorio_indu',
+                    id: 'id_laboratorio_indu-select',
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Seleccionar el laboratorio
+                  </MenuItem>
+                  {laboratorioOptions.map((laboratorio) => (
+                    <MenuItem key={laboratorio.id_labo} value={laboratorio.id_labo}>
+                      {laboratorio.id_labo} - {laboratorio.tipo_prueba_labo} - Solicita:  {laboratorio.med_solicitante_labo}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {touched.id_laboratorio_indu && errors.id_laboratorio_indu && (
+                  <FormHelperText>{errors.id_laboratorio_indu}</FormHelperText>
+                )}
+              </FormControl>
               <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 2" }} error={!!touched.estado_indu && !!errors.estado_indu}>
               <InputLabel htmlFor="estadp-select" sx={{ fontSize: 14 }}>Estado</InputLabel>
                 <Select
