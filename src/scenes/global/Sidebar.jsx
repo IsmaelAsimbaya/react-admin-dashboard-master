@@ -80,7 +80,7 @@ const Sidebar = () => {
                 ml="15px"
               >
                 <Typography variant="h3" color={colors.grey[100]}>
-                  DOCTOR SIM
+                  HAW V.1.0
                 </Typography>
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                   <MenuOutlinedIcon />
@@ -107,7 +107,7 @@ const Sidebar = () => {
                   fontWeight="bold"
                   sx={{ m: "10px 0 0 0" }}
                 >
-                  MR. CRUD
+                  DR. ARMIJOS
                 </Typography>
                 <Typography variant="h5" color={colors.greenAccent[500]}>
                   Administrador Hospitalario

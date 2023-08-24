@@ -1,7 +1,14 @@
-import { Box, IconButton, useTheme } from "@mui/material";
-import { useContext } from "react";
+import React, { useContext, useState } from "react";
+import {
+  Box,
+  IconButton,
+  useTheme,
+  Dialog,
+  DialogContent,
+  InputBase,
+  Button,
+} from "@mui/material";
 import { ColorModeContext, tokens } from "../../theme";
-import InputBase from "@mui/material/InputBase";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
@@ -13,6 +20,36 @@ const Topbar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [username, setUsername] = useState("invitado");
+  const [password, setPassword] = useState("invitado");
+
+  const handleDialogOpen = () => {
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+
+  const handleLogin = () => {
+    console.log("Usuario:", username);
+    console.log("Contraseña:", password);
+
+    setUsername(username)
+    setPassword(password)
+
+    handleDialogClose();
+  };
+
+  const handleLogout = () => {
+    console.log("Cerrando sesion de ", username, "...");
+
+    setUsername("")
+    setPassword("")
+
+    handleDialogClose();
+  };
 
   return (
     <Box display="flex" justifyContent="space-between" p={2}>
@@ -43,10 +80,34 @@ const Topbar = () => {
         <IconButton>
           <SettingsOutlinedIcon />
         </IconButton>
-        <IconButton>
+        <IconButton onClick={handleDialogOpen}>
           <PersonOutlinedIcon />
         </IconButton>
       </Box>
+
+      {/* Dialog */}
+      <Dialog open={dialogOpen} onClose={handleDialogClose}>
+        <DialogContent>
+          <InputBase
+            placeholder="Usuario"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <InputBase
+            placeholder="Contraseña"
+            type={"password"} // Cambiar entre "text" y "password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <Button variant="contained" color="primary" onClick={handleLogin}>
+            Iniciar Sesión
+          </Button>
+          <Button variant="contained" color="primary" onClick={handleLogout}>
+            Cerrar Sesión
+          </Button>
+        </DialogContent>
+      </Dialog>
+
     </Box>
   );
 };
