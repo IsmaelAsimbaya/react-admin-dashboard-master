@@ -14,15 +14,20 @@ import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import SearchIcon from "@mui/icons-material/Search";
+import { useAuth } from "../../AuthContext"; // Import the useAuth hook
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
 const Topbar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [username, setUsername] = useState("invitado");
-  const [password, setPassword] = useState("invitado");
+  const { username, setUsername, password, setPassword } = useAuth(); // Use the useAuth hook
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
   const handleDialogOpen = () => {
     setDialogOpen(true);
@@ -33,8 +38,11 @@ const Topbar = () => {
   };
 
   const handleLogin = () => {
-    console.log("Usuario:", username);
-    console.log("Contraseña:", password);
+
+    const successMessage = ` Sesion iniciada para el Usuario: ${username}`;
+    setSnackbarMessage(successMessage);
+    setSnackbarSeverity("success");
+    setSnackbarOpen(true);
 
     setUsername(username)
     setPassword(password)
@@ -43,26 +51,29 @@ const Topbar = () => {
   };
 
   const handleLogout = () => {
-    console.log("Cerrando sesion de ", username, "...");
+    const successMessage = ` Cerrando sesion del Usuario: ${username}`;
+    setSnackbarMessage(successMessage);
+    setSnackbarSeverity("info");
+    setSnackbarOpen(true);
 
-    setUsername("")
-    setPassword("")
+    setUsername("invitado")
+    setPassword("invitado")
 
     handleDialogClose();
   };
 
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
+
   return (
-    <Box display="flex" justifyContent="space-between" p={2}>
+    <Box display="flex" justifyContent="space-between" p={1}>
       {/* SEARCH BAR */}
       <Box
         display="flex"
         backgroundColor={colors.primary[400]}
         borderRadius="3px"
       >
-        <InputBase sx={{ ml: 2, flex: 1 }} placeholder="Search" />
-        <IconButton type="button" sx={{ p: 1 }}>
-          <SearchIcon />
-        </IconButton>
       </Box>
 
       {/* ICONS */}
@@ -107,7 +118,11 @@ const Topbar = () => {
           </Button>
         </DialogContent>
       </Dialog>
-
+      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+        <MuiAlert elevation={6} variant="filled" severity={snackbarSeverity} onClose={handleCloseSnackbar}>
+          {snackbarMessage}
+        </MuiAlert>
+      </Snackbar>
     </Box>
   );
 };
