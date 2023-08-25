@@ -27,7 +27,7 @@ const ActReceta = () => {
   useEffect(() => {
     const fetchConsultaOptions = async () => {
       try {
-        const response = await axios.get("http://localhost:9090/consultas");
+        const response = await axios.get("https://cloud-service-leonardo13344.cloud.okteto.net/consultas");
         const data = response.data;
         setConsultaOptions(data);
       } catch (error) {
@@ -68,7 +68,7 @@ const ActReceta = () => {
    
     try {
 
-      await axios.put(`http://localhost:9090/recetas/${id_rece}`, updatedData);
+      await axios.put(`https://cloud-service-leonardo13344.cloud.okteto.net/recetas/${id_rece}`, updatedData);
       const updatedRows = rows.map((r) => {
         if (r.id === row.id) {
           return { ...r, estado_rece: row.estado_rece };

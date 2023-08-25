@@ -19,7 +19,7 @@ const Form = () => {
   const handleSubmitApi = async (values) => {
     try {
       // Realiza una solicitud POST a la API con los datos del formulario
-      const response = await axios.post("http://localhost:9090/laboratorios", values);
+      const response = await axios.post("https://cloud-service-leonardo13344.cloud.okteto.net/laboratorios", values);
 
       // Maneja la respuesta de la API (opcional)
       setApiResponse(response.data);
@@ -33,7 +33,7 @@ const Form = () => {
   useEffect(() => {
     const fetchPatientOptions = async () => {
       try {
-        const response = await axios.get("http://localhost:9090/pacientes");
+        const response = await axios.get("https://cloud-service-leonardo13344.cloud.okteto.net/pacientes");
         const data = response.data;
         setPatientOptions(data);
       } catch (error) {
@@ -42,7 +42,7 @@ const Form = () => {
     };
     const fetchMedicosOptions = async () => {
       try {
-        const response = await axios.get("http://localhost:9090/medicos");
+        const response = await axios.get("https://cloud-service-leonardo13344.cloud.okteto.net/medicos");
         const data = response.data;
         setMedicosOptions(data);
       } catch (error) {
@@ -51,7 +51,7 @@ const Form = () => {
     };
     const fetchPersonalOptions = async () => {
       try {
-        const response = await axios.get("http://localhost:9090/personal");
+        const response = await axios.get("https://cloud-service-leonardo13344.cloud.okteto.net/personal");
         const data = response.data;
         setPersonalOptions(data);
       } catch (error) {

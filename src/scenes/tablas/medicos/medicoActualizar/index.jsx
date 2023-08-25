@@ -19,7 +19,7 @@ const ActMedico = () => {
     console.log(values);
     try {
       // Realiza una solicitud POST a la API con los datos del formulario
-      const response = await axios.post("http://localhost:9090/medicos", values);
+      const response = await axios.post("https://cloud-service-leonardo13344.cloud.okteto.net/medicos", values);
 
       // Maneja la respuesta de la API (opcional)
       setApiResponse(response.data);
@@ -35,7 +35,7 @@ const ActMedico = () => {
 
     const fetchEspecialidadesOptions = async () => {
       try {
-        const response = await axios.get("http://localhost:9090/especialidades");
+        const response = await axios.get("https://cloud-service-leonardo13344.cloud.okteto.net/especialidades");
         const data = response.data;
         setEspecialidadOptions(data);
       } catch (error) {
@@ -93,7 +93,7 @@ const ActMedico = () => {
    
     try {
 
-      await axios.put(`http://localhost:9090/medicos/${id_medi}`, updatedData);
+      await axios.put(`https://cloud-service-leonardo13344.cloud.okteto.net/medicos/${id_medi}`, updatedData);
       const updatedRows = rows.map((r) => {
         if (r.id === row.id) {
           return { ...r, estado_medi: row.estado_medi };

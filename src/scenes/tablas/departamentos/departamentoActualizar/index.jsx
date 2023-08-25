@@ -42,7 +42,7 @@ const ActDepartamento = () => {
    
     try {
       
-      await axios.put(`http://localhost:9090/departamentos/${id_depa}`, updatedData);
+      await axios.put(`https://cloud-service-leonardo13344.cloud.okteto.net/departamentos/${id_depa}`, updatedData);
       const updatedRows = rows.map((r) => {
         if (r.id === row.id) {
           return { ...r, estado_pac: row.estado_cons };
@@ -73,7 +73,7 @@ const ActDepartamento = () => {
    const handleSubmitApi = async (values) => {
     try {
       // Realiza una solicitud POST a la API con los datos del formulario
-      const response = await axios.post("http://localhost:9090/departamentos", values);
+      const response = await axios.post("https://cloud-service-leonardo13344.cloud.okteto.net/departamentos", values);
 
       // Maneja la respuesta de la API (opcional)
       setApiResponse(response.data);

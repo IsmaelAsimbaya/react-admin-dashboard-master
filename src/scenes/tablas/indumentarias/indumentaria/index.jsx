@@ -19,7 +19,7 @@ const Form = () => {
    const handleSubmitApi = async (values) => {
     try {
       // Realiza una solicitud POST a la API con los datos del formulario
-      const response = await axios.post("http://localhost:9090/indumentaria", values);
+      const response = await axios.post("https://cloud-service-leonardo13344.cloud.okteto.net/indumentaria", values);
 
       // Maneja la respuesta de la API (opcional)
       setApiResponse(response.data);
@@ -33,7 +33,7 @@ const Form = () => {
 useEffect(() => {
     const fetchLaboratorioOptions = async () => {
       try {
-        const response = await axios.get("http://localhost:9090/laboratorios");
+        const response = await axios.get("https://cloud-service-leonardo13344.cloud.okteto.net/laboratorios");
         const data = response.data;
         setLaboratorioOptions(data);
       } catch (error) {

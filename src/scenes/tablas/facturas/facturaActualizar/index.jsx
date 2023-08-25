@@ -40,7 +40,7 @@ const ActFactura = () => {
   useEffect(() => {
     const fetchPatientOptions = async () => {
       try {
-        const response = await axios.get("http://localhost:9090/pacientes");
+        const response = await axios.get("https://cloud-service-leonardo13344.cloud.okteto.net/pacientes");
         const data = response.data;
         setPatientOptions(data);
       } catch (error) {
@@ -49,7 +49,7 @@ const ActFactura = () => {
     };
     const fetchRecetaOptions = async () => {
       try {
-        const response = await axios.get("http://localhost:9090/recetas");
+        const response = await axios.get("https://cloud-service-leonardo13344.cloud.okteto.net/recetas");
         const data = response.data;
         setRecetaOptions(data);
       } catch (error) {
@@ -83,7 +83,7 @@ const ActFactura = () => {
    
     try {
 
-      await axios.put(`http://localhost:9090/facturas/${id_fact}`, updatedData);
+      await axios.put(`https://cloud-service-leonardo13344.cloud.okteto.net/facturas/${id_fact}`, updatedData);
       const updatedRows = rows.map((r) => {
         if (r.id === row.id) {
           return { ...r, estado_fact: row.estado_fact };

@@ -43,7 +43,7 @@ const ActProveedor = () => {
    
     try {
 
-      await axios.put(`http://localhost:9090/proveedores/${id_prov}`, updatedData);
+      await axios.put(`https://cloud-service-leonardo13344.cloud.okteto.net/proveedores/${id_prov}`, updatedData);
       const updatedRows = rows.map((r) => {
         if (r.id === row.id) {
           return { ...r, estado_prov: row.estado_prov };

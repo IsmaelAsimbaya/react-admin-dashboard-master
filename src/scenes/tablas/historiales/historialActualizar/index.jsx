@@ -28,7 +28,7 @@ const ActHistorial = () => {
   useEffect(() => {
     const fetchPatientOptions = async () => {
       try {
-        const response = await axios.get("http://localhost:9090/pacientes");
+        const response = await axios.get("https://cloud-service-leonardo13344.cloud.okteto.net/pacientes");
         const data = response.data;
         setPatientOptions(data);
       } catch (error) {
@@ -37,7 +37,7 @@ const ActHistorial = () => {
     };
     const fetchConsultaOptions = async () => {
       try {
-        const response = await axios.get("http://localhost:9090/consultas");
+        const response = await axios.get("https://cloud-service-leonardo13344.cloud.okteto.net/consultas");
         const data = response.data;
         setConsultaOptions(data);
       } catch (error) {
@@ -67,7 +67,7 @@ const ActHistorial = () => {
     try {
       console.log("Consulta", updatedData.id_consulta_hist);
       console.log("Paciente", updatedData.id_paciente_hist);
-      await axios.put(`http://localhost:9090/historial/${id_hist}`, updatedData);
+      await axios.put(`https://cloud-service-leonardo13344.cloud.okteto.net/historial/${id_hist}`, updatedData);
 
       const updatedRows = rows.map((r) => {
         if (r.id === row.id) {

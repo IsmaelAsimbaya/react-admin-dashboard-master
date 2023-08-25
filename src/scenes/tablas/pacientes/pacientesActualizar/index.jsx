@@ -44,7 +44,7 @@ const ActPaciente = () => {
   console.log(initialValues);
   useEffect(() => {
     // Llamada GET a la API al cargar la ventana
-    axios.get(`http://localhost:9090/pacientes/C/${cedula_pac}`)
+    axios.get(`https://cloud-service-leonardo13344.cloud.okteto.net/pacientes/C/${cedula_pac}`)
       .then((response) => {
         const pacienteData = response.data;
 
@@ -80,7 +80,7 @@ const ActPaciente = () => {
 
     console.log(cedula_pac);
     try {
-        await axios.put(`http://localhost:9090/pacientes/${pacienteId}`, updatedData);
+        await axios.put(`https://cloud-service-leonardo13344.cloud.okteto.net/pacientes/${pacienteId}`, updatedData);
         const updatedRows = rows.map((r) => {
           if (r.id === row.id) {
             return { ...r, estado_pac: row.estado_pac };
@@ -118,7 +118,7 @@ const ActPaciente = () => {
   const handleSubmitApi = async (values) => {
     try {
       // Realiza una solicitud POST a la API con los datos del formulario
-      const response = await axios.post("http://localhost:9090/pacientes", values);
+      const response = await axios.post("https://cloud-service-leonardo13344.cloud.okteto.net/pacientes", values);
 
       // Maneja la respuesta de la API (opcional)
       setApiResponse(response.data);

@@ -38,7 +38,7 @@ const ActRecetaMedica = () => {
   useEffect(() => {
     const fetchPatientOptions = async () => {
       try {
-        const response = await axios.get("http://localhost:9090/pacientes");
+        const response = await axios.get("https://cloud-service-leonardo13344.cloud.okteto.net/pacientes");
         const data = response.data;
         setPatientOptions(data);
       } catch (error) {
@@ -67,7 +67,7 @@ const ActRecetaMedica = () => {
    
     try {
 
-      await axios.put(`http://localhost:9090/segurosmedicos/${id_segmed}`, updatedData);
+      await axios.put(`https://cloud-service-leonardo13344.cloud.okteto.net/segurosmedicos/${id_segmed}`, updatedData);
       const updatedRows = rows.map((r) => {
         if (r.id === row.id) {
           return { ...r, estado_segmed: row.estado_segmed };

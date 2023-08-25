@@ -17,7 +17,7 @@ const Form = () => {
    const handleSubmitApi = async (values) => {
     try {
       // Realiza una solicitud POST a la API con los datos del formulario
-      const response = await axios.post("http://localhost:9090/personal", values);
+      const response = await axios.post("https://cloud-service-leonardo13344.cloud.okteto.net/personal", values);
 
       // Maneja la respuesta de la API (opcional)
       setApiResponse(response.data);
@@ -31,7 +31,7 @@ const Form = () => {
   useEffect(() => {
     const fetchDepartamentoOptions = async () => {
       try {
-        const response = await axios.get("http://localhost:9090/departamentos");
+        const response = await axios.get("https://cloud-service-leonardo13344.cloud.okteto.net/departamentos");
         const data = response.data;
         setDepartamentoOptions(data);
       } catch (error) {

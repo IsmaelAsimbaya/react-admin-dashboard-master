@@ -25,7 +25,7 @@ const ActEspecialidad = () => {
   useEffect(() => {
     const fetchDepartamentoOptions = async () => {
       try {
-        const response = await axios.get("http://localhost:9090/departamentos");
+        const response = await axios.get("https://cloud-service-leonardo13344.cloud.okteto.net/departamentos");
         const data = response.data;
         setDepartamentoOptions(data);
       } catch (error) {
@@ -62,7 +62,7 @@ const ActEspecialidad = () => {
 
     try {
 
-      await axios.put(`http://localhost:9090/especialidades/${id_espe}`, updatedData);
+      await axios.put(`https://cloud-service-leonardo13344.cloud.okteto.net/especialidades/${id_espe}`, updatedData);
       const updatedRows = rows.map((r) => {
         if (r.id === row.id) {
           return { ...r, estado_espe: row.estado_espe };
@@ -86,7 +86,7 @@ const ActEspecialidad = () => {
   const handleSubmitApi = async (values) => {
     try {
       // Realiza una solicitud POST a la API con los datos del formulario
-      const response = await axios.post("http://localhost:9090/especialidades", values);
+      const response = await axios.post("https://cloud-service-leonardo13344.cloud.okteto.net/especialidades", values);
 
       // Maneja la respuesta de la API (opcional)
       setApiResponse(response.data);

@@ -34,7 +34,7 @@ const ActMedicina = () => {
   useEffect(() => {
     const fetchPatientOptions = async () => {
       try {
-        const response = await axios.get("http://localhost:9090/proveedores");
+        const response = await axios.get("https://cloud-service-leonardo13344.cloud.okteto.net/proveedores");
         const data = response.data;
         setProveedorOptions(data);
       } catch (error) {
@@ -43,7 +43,7 @@ const ActMedicina = () => {
     };
     const fetchRecetaOptions = async () => {
       try {
-        const response = await axios.get("http://localhost:9090/recetas");
+        const response = await axios.get("https://cloud-service-leonardo13344.cloud.okteto.net/recetas");
         const data = response.data;
         setRecetaOptions(data);
       } catch (error) {
@@ -82,7 +82,7 @@ const ActMedicina = () => {
 
     try {
 
-      await axios.put(`http://localhost:9090/medicinas/${id_medi}`, updatedData);
+      await axios.put(`https://cloud-service-leonardo13344.cloud.okteto.net/medicinas/${id_medi}`, updatedData);
       const updatedRows = rows.map((r) => {
         if (r.id === row.id) {
           return { ...r, estado_medi: row.estado_medi };
@@ -108,7 +108,7 @@ const ActMedicina = () => {
   const handleSubmitApi = async (values) => {
     try {
       // Realiza una solicitud POST a la API con los datos del formulario
-      const response = await axios.post("http://localhost:9090/medicinas", values);
+      const response = await axios.post("https://cloud-service-leonardo13344.cloud.okteto.net/medicinas", values);
 
       // Maneja la respuesta de la API (opcional)
       setApiResponse(response.data);

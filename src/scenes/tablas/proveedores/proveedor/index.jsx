@@ -17,7 +17,7 @@ const Form = () => {
    const handleSubmitApi = async (values) => {
     try {
       // Realiza una solicitud POST a la API con los datos del formulario
-      const response = await axios.post("http://localhost:9090/proveedores", values);
+      const response = await axios.post("https://cloud-service-leonardo13344.cloud.okteto.net/proveedores", values);
 
       // Maneja la respuesta de la API (opcional)
       setApiResponse(response.data);

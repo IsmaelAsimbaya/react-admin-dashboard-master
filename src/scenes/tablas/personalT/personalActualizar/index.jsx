@@ -25,7 +25,7 @@ const ActPersonal = () => {
   useEffect(() => {
     const fetchDepartamentoOptions = async () => {
       try {
-        const response = await axios.get("http://localhost:9090/departamentos");
+        const response = await axios.get("https://cloud-service-leonardo13344.cloud.okteto.net/departamentos");
         const data = response.data;
         setDepartamentoOptions(data);
       } catch (error) {
@@ -60,7 +60,7 @@ const ActPersonal = () => {
     };
     try {
 
-      await axios.put(`http://localhost:9090/personal/${id_pers}`, updatedData);
+      await axios.put(`https://cloud-service-leonardo13344.cloud.okteto.net/personal/${id_pers}`, updatedData);
       const updatedRows = rows.map((r) => {
         if (r.id === row.id) {
           return { ...r, estado_pers: row.estado_pers };

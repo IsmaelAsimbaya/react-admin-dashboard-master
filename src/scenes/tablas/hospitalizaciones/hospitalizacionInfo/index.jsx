@@ -2,12 +2,11 @@ import { useState, useEffect } from "react";
 import { Box, useTheme, Button } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../../../theme";
-//import { mockDataContacts } from "../../data/mockData";
+import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import { useNavigate} from 'react-router-dom';
 import Header from "../../../../components/Header";
-//import { useTheme } from "@mui/material";
-import axios from "axios"; // Importa la librería axios para realizar la solicitud HTTP
+import axios from "axios"; 
 
 
 const Contacts = () => {
@@ -45,7 +44,7 @@ const Contacts = () => {
   useEffect(() => {
     // Utiliza el hook useEffect para realizar la solicitud a la API al cargar el componente
     axios
-      .get("http://localhost:9090/hospitalizaciones") // Reemplaza "http://ruta-de-tu-api.com/pacientes" con la URL de tu API
+      .get("https://cloud-service-leonardo13344.cloud.okteto.net/hospitalizaciones") // Reemplaza "http://ruta-de-tu-api.com/pacientes" con la URL de tu API
       .then((response) => {
         // Asigna un id único a cada fila antes de actualizar el estado
         const rowsWithId = response.data.map((row, index) => ({
@@ -78,7 +77,7 @@ const Contacts = () => {
     // Send the updated data to the API using the PUT method
     const id = row.id_hosp; // Get the id of the row to be updated
     axios
-      .put(`http://localhost:9090/hospitalizaciones/${id}`, updatedData)
+      .put(`https://cloud-service-leonardo13344.cloud.okteto.net/hospitalizaciones/${id}`, updatedData)
       .then((response) => {
         // If the API call is successful, update the state with the new data
         const updatedRows = rows.map((r) => {
@@ -136,7 +135,7 @@ const Contacts = () => {
               variant="contained"
               style={{ backgroundColor: buttonColor, width: "100%" }}
               sx={{ textAlign: "center" }}
-              startIcon={<BorderColorIcon />}
+              startIcon={<RestoreFromTrashIcon />}
             />
             <Button
               onClick={() => editar(row)}

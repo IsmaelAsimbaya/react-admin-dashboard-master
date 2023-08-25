@@ -49,7 +49,7 @@ const ActHospitalizacion = () => {
    
     try {
 
-      await axios.put(`http://localhost:9090/hospitalizaciones/${id_hosp}`, updatedData);
+      await axios.put(`https://cloud-service-leonardo13344.cloud.okteto.net/hospitalizaciones/${id_hosp}`, updatedData);
       const updatedRows = rows.map((r) => {
         if (r.id === row.id) {
           return { ...r, estado_hosp: row.estado_hosp };

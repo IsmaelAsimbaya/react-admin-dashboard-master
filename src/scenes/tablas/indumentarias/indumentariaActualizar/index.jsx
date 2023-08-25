@@ -29,7 +29,7 @@ const ActIndumentaria = () => {
   useEffect(() => {
     const fetchLaboratorioOptions = async () => {
       try {
-        const response = await axios.get("http://localhost:9090/laboratorios");
+        const response = await axios.get("https://cloud-service-leonardo13344.cloud.okteto.net/laboratorios");
         const data = response.data;
         setLaboratorioOptions(data);
       } catch (error) {
@@ -63,7 +63,7 @@ const ActIndumentaria = () => {
    
     try {
 
-      await axios.put(`http://localhost:9090/indumentaria/${id_indu}`, updatedData);
+      await axios.put(`https://cloud-service-leonardo13344.cloud.okteto.net/indumentaria/${id_indu}`, updatedData);
       const updatedRows = rows.map((r) => {
         if (r.id === row.id) {
           return { ...r, estado_indu: row.estado_indu };

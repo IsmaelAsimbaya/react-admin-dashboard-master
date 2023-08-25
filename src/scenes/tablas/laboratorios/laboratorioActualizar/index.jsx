@@ -29,7 +29,7 @@ const ActActualizar = () => {
   useEffect(() => {
     const fetchPatientOptions = async () => {
       try {
-        const response = await axios.get("http://localhost:9090/pacientes");
+        const response = await axios.get("https://cloud-service-leonardo13344.cloud.okteto.net/pacientes");
         const data = response.data;
         setPatientOptions(data);
       } catch (error) {
@@ -38,7 +38,7 @@ const ActActualizar = () => {
     };
     const fetchMedicosOptions = async () => {
       try {
-        const response = await axios.get("http://localhost:9090/medicos");
+        const response = await axios.get("https://cloud-service-leonardo13344.cloud.okteto.net/medicos");
         const data = response.data;
         setMedicosOptions(data);
       } catch (error) {
@@ -47,7 +47,7 @@ const ActActualizar = () => {
     };
     const fetchPersonalOptions = async () => {
       try {
-        const response = await axios.get("http://localhost:9090/personal");
+        const response = await axios.get("https://cloud-service-leonardo13344.cloud.okteto.net/personal");
         const data = response.data;
         setPersonalOptions(data);
       } catch (error) {
@@ -89,7 +89,7 @@ const ActActualizar = () => {
 
     try {
 
-      await axios.put(`http://localhost:9090/laboratorios/${id_labo}`, updatedData);
+      await axios.put(`https://cloud-service-leonardo13344.cloud.okteto.net/laboratorios/${id_labo}`, updatedData);
       const updatedRows = rows.map((r) => {
         if (r.id === row.id) {
           return { ...r, estado_labo: row.estado_labo };
