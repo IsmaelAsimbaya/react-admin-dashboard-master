@@ -1,0 +1,5 @@
+name: admin-dashboard-service
+image: okteto.dev/app-admin-dashboard:1.0.0
+command: ["npm", "start", "--", "--port", "8080"]
+volumes:
+  - .:/app
